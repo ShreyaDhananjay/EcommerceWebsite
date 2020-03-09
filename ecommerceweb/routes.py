@@ -7,12 +7,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html', posts=posts)
-
-
-@app.route("/about")
-def about():
-    return render_template('about.html', title='About')
+    return render_template('home.html')
 
 
 @app.route("/signup", methods=['GET', 'POST'])
@@ -28,7 +23,7 @@ def register():
         flash('Your cart has been created! You are now able to log in', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
-
+'''
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -43,14 +38,18 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
-
+'''
 @app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
-
+'''
 @app.route("/cart")
 @login_required
 def cart():
     return render_template('cart.html', title='cart')
+   ''' 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    return render_template('login.html', title='Login', form=form)

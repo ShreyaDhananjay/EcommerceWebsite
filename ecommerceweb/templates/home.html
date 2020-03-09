@@ -1,0 +1,69 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid" style="background-color: white;">
+   <center> <h2>Featured Products</h2></center>
+  <div id="demo" class="carousel slide" data-ride="carousel">
+
+    <!-- Indicators -->
+    <ul class="carousel-indicators">
+      <li data-target="#demo" data-slide-to="0" class="active"></li>
+      <li data-target="#demo" data-slide-to="1"></li>
+      <li data-target="#demo" data-slide-to="2"></li>
+    </ul>
+    
+    <!-- The slideshow -->
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="{{ url_for('static', filename='gallery24.jpg') }}" width="inherit" height="50%">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='gallery4.jpg') }}"  width="inherit" height="50%">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='gallery8.jpg') }}"  width="inherit" height="50%">
+      </div>
+      <div class="carousel-item">
+        <img src="{{ url_for('static', filename='gallery21.jpg') }}"  width="inherit" height="50%">
+      </div>
+    </div>
+    
+    <!-- Left and right controls -->
+    <a class="carousel-control-prev" href="#demo" data-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo" data-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+  </div>
+</div>
+<div class="container-fluid">
+    <br><br><br>
+    <h2><center>Deals of the Day</center></h2>
+    <div class="card-columns">
+        <div class="card" style="width:100%">
+            <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery13.jpg') }}" alt="Card image" style="width:100%"></a>
+            <div class="card-body">
+            <h4 class="card-title">Sling Bag</h4>
+            <p class="card-text">A durable and trendy handmade bag, only for Rs. 300! </p>
+            <a href="#" class="btn btn-primary">Add to Cart</a>
+            </div>
+        </div>
+        <div class="card" style="width:100%">
+            <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='spices.jpg') }}" alt="Card image" style="width:100%"></a>
+            <div class="card-body">
+            <h4 class="card-title">Spices</h4>
+            <p class="card-text">Check out our fresh homemade spices!</p>
+            <a href="#" class="btn btn-primary">See more</a>
+            </div>
+        </div>
+        <div class="card" style="width:100%">
+            <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery25.jpg') }}" alt="Card image" style="width:100%"></a>
+            <div class="card-body">
+            <h4 class="card-title">Home Decor</h4>
+            <p class="card-text">Exclusive deals on home decor!</p>
+            <a href="#" class="btn btn-primary">See more</a>
+            </div>
+        </div>
+    
+</div>
+{% endblock content %}
