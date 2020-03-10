@@ -1,0 +1,154 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container pt-5 pb-5">
+    <div class="card pl-3 pr-3" style="border:0.5px solid grey;">
+        <div class="row">
+            <aside class="col-sm-7 border-right">
+                <div class="container pt-5">
+                    <div class="row align-items-center">
+                        <div id="slider">
+                            <div id="myCarousel" class="carousel slide shadow">
+                                <div class="carousel-inner">
+                                    <div class="active carousel-item" data-slide-number="0">
+                                        <img src="http://placehold.it/580x480&amp;text=one" class="img-fluid">
+                                    </div>
+                                    <div class="carousel-item" data-slide-number="1">
+                                        <img src="http://placehold.it/580x480&amp;text=two" class="img-fluid">
+                                    </div>
+                                    <div class="carousel-item" data-slide-number="2">
+                                        <img src="http://placehold.it/580x480&amp;text=three" class="img-fluid">
+                                    </div>
+                                    <div class="carousel-item" data-slide-number="3">
+                                        <img src="http://placehold.it/580x480&amp;text=four" class="img-fluid">
+                                    </div>
+
+                                    <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                    <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </div>
+
+                                <ul class="carousel-indicators list-inline mx-auto border px-2">
+                                    <li class="list-inline-item active">
+                                        <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#myCarousel">
+                                            <img src="http://placehold.it/80x60&amp;text=one" class="img-fluid">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a id="carousel-selector-1" data-slide-to="1" data-target="#myCarousel">
+                                            <img src="http://placehold.it/80x60&amp;text=two" class="img-fluid">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a id="carousel-selector-2" data-slide-to="2" data-target="#myCarousel">
+                                            <img src="http://placehold.it/80x60&amp;text=three" class="img-fluid">
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                            <a id="carousel-selector-3" data-slide-to="3" data-target="#myCarousel">
+                                            <img src="http://placehold.it/80x60&amp;text=four" class="img-fluid">
+                                        </a>
+                                    </li>
+                                </ul>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+            <!--right side-->
+            <aside class="col-sm-5 pt-5 pl-5">
+                <h6 class="text-muted pt-3"><b>Clock</b></h6>
+                <h3>Product name</h3>
+                <p class="price-detail-wrap"> 
+                    <span class="price h3" style="color: brown;"> 
+                        <b><span class="currency">₹</span><span class="num">499</span>
+                    </span></b>
+                </p> 
+                <form>						 
+                     <h6><b>Size : </b></h6>
+                     <select name="size" class="custom-select mb-3">
+                          <option selected>Select Size</option>
+                          <option value="volvo">Small</option>
+                          <option value="fiat">Medium</option>
+                          <option value="audi">Large</option>
+                    </select>
+                    <h6><b>Quantity : </b></h6>
+                    <select name="qauntity" class="custom-select mb-3">
+                          <option selected>Select Quantity</option>
+                          <option value="volvo">1</option>
+                          <option value="fiat">2</option>
+                          <option value="audi">3</option>
+                    </select>
+                </form>
+                <div class="pt-3">
+                    <button class="btn btn-warning text-light btn-lg p-3 pb-2 btn-block" type="button" data-button-text="buy-now">
+                        <b><i class="fas fa-bolt"></i> BUY NOW</b>
+                    </button>
+                    <button class="btn btn-danger btn-lg p-3 pb-2 btn-block" type="button" data-button-text="add-to-cart">
+                        <b><i class="fas fa-shopping-cart"></i> ADD TO CART</b>
+                    </button>
+                </div>
+            </aside>				
+        </div>
+        <span class="pb-4"></span>
+        <ul class="nav nav-tabs">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#desp">Description</a>
+              </li>
+              <li class="nav-item">
+                   <a class="nav-link" data-toggle="tab" href="#Overview">Overview</a>
+                 </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#Shipping">Shipping</a>
+              </li>
+        </ul>
+        <div class="tab-content">
+            <div id="desp" class="container tab-pane active"><br>
+                  <h3>Product Name</h3>
+                 <p>Here product description will appear</p>
+            </div>
+            <div id="Overview" class="container tab-pane fade"><br>
+                 <p>Overview of the product</p>
+            </div>
+            <div id="Shipping" class="container tab-pane fade"><br>
+                  <p>Shipping and return details of the product</p>
+            </div>
+          </div>
+          <hr>
+          <div class="container-fluid">
+            <h2><center>You may also Like</center></h2>
+            <div class="card-columns">
+                <div class="card" style="width:100%">
+                <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery13.jpg') }}" alt="Card image" style="width:100%"></a>
+                    <div class="card-body">
+                        <h4 class="card-title">Sling Bag</h4>
+                        <p class="card-text">A durable and trendy handmade bag, only for Rs. 300! </p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                </div>
+                <div class="card" style="width:100%">
+                    <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='spices.jpg') }}" alt="Card image" style="width:100%"></a>
+                    <div class="card-body">
+                        <h4 class="card-title">Spices</h4>
+                        <p class="card-text">Check out our fresh homemade spices!</p>
+                        <a href="#" class="btn btn-primary">See more</a>
+                    </div>
+                </div>
+                <div class="card" style="width:100%">
+                    <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery25.jpg') }}" alt="Card image"style="width:100%"></a>
+                    <div class="card-body">
+                        <h4 class="card-title">Home Decor</h4>
+                        <p class="card-text">Exclusive deals on home decor!</p>
+                        <a href="#" class="btn btn-primary">See more</a>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
