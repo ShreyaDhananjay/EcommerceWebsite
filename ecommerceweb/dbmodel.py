@@ -10,7 +10,7 @@ def load_user(user_id):
 class User(db.Model, UserMixin):
     __tablename__="user"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(75), unique=True, nullable=False)
+    name = db.Column(db.String(75), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     contactno = db.Column(db.Numeric(10,0), unique=True)
@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
 class Seller(db.Model):
     __tablename__="seller"
     sid = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(75), unique=True, nullable=False)
+    name = db.Column(db.String(75), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     contactno = db.Column(db.Numeric(10,0), unique=True)
