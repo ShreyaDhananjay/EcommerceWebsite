@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, request
 from ecommerceweb import app, db, bcrypt
-from ecommerceweb.forms import RegistrationForm, LoginForm
+from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm
 from ecommerceweb.dbmodel import User
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -11,7 +11,8 @@ def home():
 
 @app.route("/product")
 def product():
-    return render_template('product_desc.html')
+    return render_template('product_desc.html', title='Product Details')
+
 
 @app.route("/signup", methods=['GET', 'POST'])
 def register():
@@ -26,6 +27,7 @@ def register():
         flash('Your account has been created! You can now log in', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -42,19 +44,43 @@ def login():
             flash('Login unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+
 @app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for('home'))
 
-'''
-@app.route("/cart")
+
+@app.route("/account", methods=['GET', 'POST'])
 @login_required
-def cart():
-    return render_template('cart.html', title='cart')
+def account():
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        current_user.name = form.name.data
+        current_user.email = form.email.data
+        current_user.contactno = form.contactno.data
+        current_user.address_line1 = form.addr1.data
+        current_user.address_line2 = form.addr2.data
+        current_user.address_line3 = form.addr3.data
+        current_user.pincode = form.pincode.data
+        current_user.city = form.city.data
+        current_user.state = form.state.data
+        current_user.country = form.country.data
+        db.session.commit()
+        flash('Your account has been updated!', 'success')
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        print(current_user.name)
+        form.name.data = current_user.name
+        form.email.data = current_user.email
+        form.contactno.data = current_user.contactno
+        form.addr1.data = current_user.address_line1
+        form.addr2.data = current_user.address_line2
+        form.addr3.data = current_user.address_line3
+        form.pincode.data = current_user.pincode
+        form.city.data = current_user.city
+        form.state.data = current_user.state
+        form.country.data = current_user.country
+
+    return render_template('account.html', title='Account', form=form)
    
-   
-@app.route("/login", methods=['GET', 'POST'])
-def login():
-    return render_template('login.html', title='Login', form=form)
-   ''' 

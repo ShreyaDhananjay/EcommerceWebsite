@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='pdesp.css') }}">
-    <title>Home</title>
+    {% if title %}
+        <title>{{ title }}</title>
+    {% else %}
+        <title>Home</title>
+    {% endif %}
     <style>
       /* Make the image fully responsive */
       .carousel-inner img {
@@ -48,7 +52,7 @@
             <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
           </div>
             <div class="dropdown" style="color: white;">
-              <a class="dropdown-toggle" data-toggle="dropdown" href=""><span style="color: white;">Categories</span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" href="" style="color: white;">Categories</a>
               <div class="dropdown-menu" role="menu">
                 <a href="#" class="dropdown-item">Handicrafts</a>
                 <a href="#"class="dropdown-item">Home Decor</a>
@@ -61,6 +65,7 @@
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
+            <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
             <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
             {% else %}
             <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
@@ -84,17 +89,16 @@
         {% endwith %}
   </main>
   {% block content %}{% endblock %}
-  <footer class="py-5 bg-dark" style="height: 2px; bottom: initial;">
-    <p class="m-0 text-center text-white">Copyright &copy; Your Website 2019</p>
-  
-</footer>
-<script src="vendor/jquery/jquery.min.js"></script>
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <br><br><br><br>
+  <footer class="py-5 bg-dark font-small pt-4" style="height: 100%;">
+    <p class="m-0 text-center text-white">Copyright &copy; DesiOriginals 2020</p>
+  </footer>
+
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 </body>
 </html>

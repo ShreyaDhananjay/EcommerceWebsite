@@ -1,6 +1,29 @@
 body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif !important;
+    padding: 0px;
+    margin: 0px;
   }
+  .main-header{
+    height:100px;
+    margin: 0;
+    padding: 30px;
+    background-color: white;
+  }
+  
+  .carousel-item {
+    height: 65vh;
+    min-height: 300px;
+    background: no-repeat center center scroll;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
+  .main-card {
+    margin-bottom: 30px;
+  }
+  
+  
   
   .navbar {
     overflow: hidden;

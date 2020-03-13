@@ -21,11 +21,10 @@ class User(db.Model, UserMixin):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     country = db.Column(db.String(50))
-
     def __repr__(self):
         return f"User('{self.name}', '{self.email}')"
 
-class Seller(db.Model):
+class Seller(db.Model, UserMixin):
     __tablename__="seller"
     sid = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(75), nullable=False)
