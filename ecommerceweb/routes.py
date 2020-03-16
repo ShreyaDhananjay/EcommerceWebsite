@@ -1,8 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request
 from ecommerceweb import app, db, bcrypt
 from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from ecommerceweb.dbmodel import User
+from ecommerceweb.dbmodel import User, Product, Category
 from flask_login import login_user, current_user, logout_user, login_required
+import base64
 
 @app.route("/")
 @app.route("/home")
@@ -11,7 +12,13 @@ def home():
 
 @app.route("/product")
 def product():
-    return render_template('product_desc.html', title='Product Details')
+    prod=Product.query.filter_by(pid=7).first()
+    img=[]
+    img.append(base64.b64encode(prod.image_file1).decode('ascii'))
+    img.append(base64.b64encode(prod.image_file2).decode('ascii'))
+    img.append(base64.b64encode(prod.image_file3).decode('ascii'))
+    img.append(base64.b64encode(prod.image_file4).decode('ascii'))
+    return render_template('product_desc.html', title='Product Details', prod=prod, img=img)
 
 
 @app.route("/signup", methods=['GET', 'POST'])

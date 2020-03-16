@@ -34,48 +34,50 @@
       .navbar-custom{
         background-color: #c74456;
       }
+      .logo{
+        height: 100%;
+        width: 100%;
+      }
       </style>
 </head>
 <body>
-    
-<nav class="navbar navbar-expand-sm bg-steel navbar-dark fixed-top">
-  
-  <!-- Links -->
-  <header class="site-header">
-    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-      <div class="container">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarToggle">
-          <div class="navbar-nav mr-auto">
-            <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-          </div>
-            <div class="dropdown" style="color: white;">
-              <a class="dropdown-toggle" data-toggle="dropdown" href="" style="color: white;">Categories</a>
-              <div class="dropdown-menu" role="menu">
-                <a href="#" class="dropdown-item">Handicrafts</a>
-                <a href="#"class="dropdown-item">Home Decor</a>
-                <a href="#" class="dropdown-item">Ayurveda</a>
-                <a href="#" class="dropdown-item">Khadi cloth products</a>
-                <a href="#" class="dropdown-item">Spices</a>
-                <a href="#" class="dropdown-item">Pickles</a>
-              </div>
-          </div>
-          <!-- Navbar Right Side -->
-          <div class="navbar-nav">
-            {% if current_user.is_authenticated %}
-            <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
-            <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-            <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-            <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
-            {% endif %}
+  <nav class="navbar navbar-expand-sm bg-steel navbar-dark fixed-top">
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a href="/" class="navbar-brand title">DesiOriginals</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+            </div>
+              <div class="dropdown" style="color: white;">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="" style="color: white;">Categories</a>
+                <div class="dropdown-menu" role="menu">
+                  <a href="#" class="dropdown-item">Handicrafts</a>
+                  <a href="#"class="dropdown-item">Home Decor</a>
+                  <a href="#" class="dropdown-item">Ayurveda</a>
+                  <a href="#" class="dropdown-item">Khadi cloth products</a>
+                  <a href="#" class="dropdown-item">Spices</a>
+                  <a href="#" class="dropdown-item">Pickles</a>
+                </div>
+            </div>
+            <!-- Navbar Right Side -->
+            <div class="navbar-nav">
+              {% if current_user.is_authenticated %}
+              <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+              <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+              {% else %}
+              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+              {% endif %}
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
-  </header>
+      </nav>
+    </header>
   </nav>
   <main role="main" class="container">
       {% with messages = get_flashed_messages(with_categories=true) %}

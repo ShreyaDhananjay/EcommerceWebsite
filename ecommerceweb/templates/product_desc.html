@@ -9,19 +9,26 @@
                         <div id="slider">
                             <div id="myCarousel" class="carousel slide shadow">
                                 <div class="carousel-inner">
+                                    {% if img[0] %}
                                     <div class="active carousel-item" data-slide-number="0">
-                                        <img src="http://placehold.it/580x480&amp;text=one" class="img-fluid">
+                                        <img src="data:;base64,{{ img[0] }}" class="img-fluid">
                                     </div>
+                                    {% endif %}
+                                    {% if img[1] %}
                                     <div class="carousel-item" data-slide-number="1">
-                                        <img src="http://placehold.it/580x480&amp;text=two" class="img-fluid">
+                                        <img src="data:;base64,{{ img[1] }}" class="img-fluid">
                                     </div>
+                                    {% endif %}
+                                    {% if img[2] %}
                                     <div class="carousel-item" data-slide-number="2">
-                                        <img src="http://placehold.it/580x480&amp;text=three" class="img-fluid">
+                                        <img src="data:;base64,{{ img[2] }}" class="img-fluid">
                                     </div>
+                                    {% endif %}
+                                    {% if img[3] %}
                                     <div class="carousel-item" data-slide-number="3">
-                                        <img src="http://placehold.it/580x480&amp;text=four" class="img-fluid">
+                                        <img src="data:;base64,{{ img[3] }}" class="img-fluid">
                                     </div>
-
+                                    {% endif %}
                                     <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                         <span class="sr-only">Previous</span>
@@ -33,26 +40,34 @@
                                 </div>
 
                                 <ul class="carousel-indicators list-inline mx-auto border px-2">
+                                    {% if img[0] %}
                                     <li class="list-inline-item active">
                                         <a id="carousel-selector-0" class="selected" data-slide-to="0" data-target="#myCarousel">
-                                            <img src="http://placehold.it/80x60&amp;text=one" class="img-fluid">
+                                            <img src="data:;base64,{{ img[0] }}" class="img-fluid" style="width: 60px; height: 80px;">
                                         </a>
                                     </li>
+                                    {% endif %}
+                                    {% if img[1] %}
                                     <li class="list-inline-item">
                                         <a id="carousel-selector-1" data-slide-to="1" data-target="#myCarousel">
-                                            <img src="http://placehold.it/80x60&amp;text=two" class="img-fluid">
+                                            <img src="data:;base64,{{ img[1] }}" class="img-fluid" style="width: 60px; height: 80px;">
                                         </a>
                                     </li>
+                                    {% endif %}
+                                    {% if img[2] %}
                                     <li class="list-inline-item">
                                         <a id="carousel-selector-2" data-slide-to="2" data-target="#myCarousel">
-                                            <img src="http://placehold.it/80x60&amp;text=three" class="img-fluid">
+                                            <img src="data:;base64,{{ img[2] }}" class="img-fluid" style="width: 60px; height: 80px;">
                                         </a>
                                     </li>
+                                    {% endif %}
+                                    {% if img[3] %}
                                     <li class="list-inline-item">
                                             <a id="carousel-selector-3" data-slide-to="3" data-target="#myCarousel">
-                                            <img src="http://placehold.it/80x60&amp;text=four" class="img-fluid">
+                                            <img src="data:;base64,{{ img[3] }}" class="img-fluid" style="width: 60px; height: 80px;">
                                         </a>
                                     </li>
+                                    {% endif %}
                                 </ul>
                                 </div>
                         </div>
@@ -61,21 +76,33 @@
             </aside>
             <!--right side -->
             <aside class="col-sm-5 pt-5 pl-5">
-                <h6 class="text-muted pt-3"><b>Clock</b></h6>
-                <h3>Product name</h3>
+                {% if prod.category_id == 1%}
+                <h6 class="text-muted pt-3"><b>Handicrafts</b></h6>
+                {% elif prod.category_id == 2%}
+                <h6 class="text-muted pt-3"><b>Home Decor</b></h6>
+                {% elif prod.category_id == 3%}
+                <h6 class="text-muted pt-3"><b>Ayurvedic Products</b></h6>
+                {% elif prod.category_id == 4%}
+                <h6 class="text-muted pt-3"><b>Khadi Cloth Products</b></h6>
+                {% elif prod.category_id == 5%}
+                <h6 class="text-muted pt-3"><b>Spices</b></h6>
+                {% elif prod.category_id == 6%}
+                <h6 class="text-muted pt-3"><b>Pickles</b></h6>
+                {% endif%}
+                <h3>{{ prod.name }}</h3>
+                {% if prod.stock>2 %}
+                <h6 style="color: green;">In Stock</h6>
+                {% elif prod.stock==2 %}
+                <h6 style="color: green;">Only 2 left in stock</h6>
+                {% else %}
+                <h6 style="color: green;">Only 1 left in stock</h6>
+                {% endif%}
                 <p class="price-detail-wrap"> 
                     <span class="price h3" style="color: brown;"> 
-                        <b><span class="currency">₹</span><span class="num">499</span>
+                        <b><span class="currency">₹</span><span class="num">{{ prod.cost }}</span>
                     </span></b>
                 </p> 
                 <form>						 
-                     <h6><b>Size : </b></h6>
-                     <select name="size" class="custom-select mb-3">
-                          <option selected>Select Size</option>
-                          <option value="volvo">Small</option>
-                          <option value="fiat">Medium</option>
-                          <option value="audi">Large</option>
-                    </select>
                     <h6><b>Quantity : </b></h6>
                     <select name="qauntity" class="custom-select mb-3">
                           <option selected>Select Quantity</option>
@@ -100,22 +127,16 @@
                 <a class="nav-link active" data-toggle="tab" href="#desp">Description</a>
               </li>
               <li class="nav-item">
-                   <a class="nav-link" data-toggle="tab" href="#Overview">Overview</a>
-                 </li>
-              <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#Shipping">Shipping</a>
               </li>
         </ul>
         <div class="tab-content">
             <div id="desp" class="container tab-pane active"><br>
-                  <h3>Product Name</h3>
-                 <p>Here product description will appear</p>
-            </div>
-            <div id="Overview" class="container tab-pane fade"><br>
-                 <p>Overview of the product</p>
+                  <h3>{{ prod.name }}</h3>
+                 <p>{{ prod.details }}</p>
             </div>
             <div id="Shipping" class="container tab-pane fade"><br>
-                  <p>Shipping and return details of the product</p>
+                  <p>We ship everywhere in India within 2-4 business days.</p>
             </div>
           </div>
           <hr>

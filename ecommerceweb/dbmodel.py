@@ -55,10 +55,10 @@ class Product(db.Model):
     details = db.Column(db.String(500), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey(Category.__table__.c.cid), nullable=False)
     sid = db.Column(db.Integer, db.ForeignKey(Seller.__table__.c.sid), nullable=False)
-    image_file1 = db.Column(db.String(20), nullable=False, default='default.jpg')
-    image_file2 = db.Column(db.String(20), nullable=False, default='default.jpg')
-    image_file3 = db.Column(db.String(20), nullable=False, default='default.jpg')
-    image_file4 = db.Column(db.String(20), nullable=False, default='default.jpg')
+    image_file1 = db.Column(db.LargeBinary, nullable=False, default='default.jpg')
+    image_file2 = db.Column(db.LargeBinary, default='default.jpg')
+    image_file3 = db.Column(db.LargeBinary, default='default.jpg')
+    image_file4 = db.Column(db.LargeBinary, default='default.jpg')
     stock = db.Column(db.Integer, nullable=False)
 
 class Order(db.Model):
