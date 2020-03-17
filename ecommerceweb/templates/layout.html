@@ -56,11 +56,11 @@
               <div class="dropdown" style="color: white;">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="" style="color: white;">Categories</a>
                 <div class="dropdown-menu" role="menu">
-                  <a href="#" class="dropdown-item">Handicrafts</a>
-                  <a href="#"class="dropdown-item">Home Decor</a>
-                  <a href="#" class="dropdown-item">Ayurveda</a>
-                  <a href="#" class="dropdown-item">Khadi cloth products</a>
-                  <a href="#" class="dropdown-item">Jewellery</a>
+                  <a href="{{ url_for('categorypage', catname='handicrafts')}}" class="dropdown-item">Handicrafts</a>
+                  <a href="{{ url_for('categorypage', catname='homedecor')}}"class="dropdown-item">Home Decor</a>
+                  <a href="{{ url_for('categorypage', catname='ayurvedicproducts')}}" class="dropdown-item">Ayurvedic Products</a>
+                  <a href="{{ url_for('categorypage', catname='khadiclothproducts')}}" class="dropdown-item">Khadi cloth products</a>
+                  <a href="{{ url_for('categorypage', catname='jewellery')}}" class="dropdown-item">Jewellery</a>
                 </div>
             </div>
             <!-- Navbar Right Side -->

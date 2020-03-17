@@ -10,14 +10,42 @@ import base64
 def home():
     return render_template('home.html')
 
-@app.route("/product")
-def product():
-    prod=Product.query.filter_by(pid=7).first()
+@app.route("/<string:catname>")
+def categorypage(catname):
+    c=0
+    title=""
+    if catname=="handicrafts":
+        c=1
+        title="Handicrafts"
+    elif catname=="homedecor":
+        c=2
+        title="Home Decor"
+    elif catname=="ayurvedicproducts":
+        c=3
+        title="Ayurvedic Products"
+    elif catname=="khadiclothproducts":
+        c=4
+        title="Khadi Cloth Products"
+    else:
+        c=5
+        title="Jewellery"
+    prod=Product.query.filter_by(category_id=c).all()
+    img=[]
+    for p in prod:
+        img.append(base64.b64encode(p.image_file1).decode('ascii'))
+    return render_template('category.html', prod=prod, img=img, l=len(prod), title=title)
+
+@app.route("/product<int:id>")
+def product(id):
+    prod=Product.query.filter_by(pid=id).first_or_404("This product does not exist")
     img=[]
     img.append(base64.b64encode(prod.image_file1).decode('ascii'))
-    img.append(base64.b64encode(prod.image_file2).decode('ascii'))
-    img.append(base64.b64encode(prod.image_file3).decode('ascii'))
-    img.append(base64.b64encode(prod.image_file4).decode('ascii'))
+    if prod.image_file2:
+        img.append(base64.b64encode(prod.image_file2).decode('ascii'))
+    if prod.image_file3:
+        img.append(base64.b64encode(prod.image_file3).decode('ascii'))
+    if prod.image_file4:
+        img.append(base64.b64encode(prod.image_file4).decode('ascii'))
     return render_template('product_desc.html', title='Product Details', prod=prod, img=img)
 
 
