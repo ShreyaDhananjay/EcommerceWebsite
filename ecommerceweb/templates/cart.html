@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<center> 
+    <h2><span class="title">{{ title }}</span></h2>
+    <div class="container">
+        <div class="row">
+                <div class="table-responsive table-condensed table_style">
+                    <table class="table table-bordered table-striped table-hover">
+                        <tbody>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Total Cost</th>
+                            </tr>
+                            {% for i in range(l)%}
+                                <tr>
+                                    <td>{{ p[i] }}</td>
+                                    <td>{{ c[i].quantity}}</td>
+                                    <td><span class="currency">₹</span>{{ cost[i] }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td></td>
+                                <td><b>Total</b></td>
+                                <td><b><span class="currency">₹</span>{{ total }}</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><a href="#"><center><button class="btn btn-outline-primary">Confirm
+                                    Order</button></center></a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</center>
+{% endblock content%}

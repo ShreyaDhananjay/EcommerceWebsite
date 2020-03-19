@@ -1,5 +1,4 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
@@ -50,14 +49,7 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('That email is taken. Please choose a different one.')
 
-class ProductForm(FlaskForm):
-    name = StringField('Name',
-                           validators=[DataRequired(), Length(min=2, max=100)])
-    cost = IntegerField('Cost', validators=[DataRequired()])
-    details = StringField('Product Details', validators=[DataRequired(), Length(min=1, max=500)])
-    category_id = SelectField('Category', choices=[('1', 'Handicrafts'), ('2', 'Home Decor'), ('3', 'Ayurveda'), ('4', 'Khadi Cloth products'), ('5', 'Spices'), ('6', 'Pickles')])
-    image_file1 = FileField('Picture 1', validators=[FileAllowed(['jpg', 'png'])])
-    image_file2 = FileField('Picture 2', validators=[FileAllowed(['jpg', 'png'])])
-    image_file3 = FileField('Picture 3', validators=[FileAllowed(['jpg', 'png'])])
-    image_file4 = FileField('Picture 4', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Update')
+class QuantityForm(FlaskForm):
+    quantity = IntegerField('Quantity', validators=[DataRequired()], default=1)
+    buy = SubmitField('Buy Now')
+    add = SubmitField('Add to Cart')

@@ -100,23 +100,28 @@
                         <b><span class="currency">₹</span><span class="num">{{ prod.cost }}</span>
                     </span></b>
                 </p> 
-                <form>						 
-                    <h6><b>Quantity : </b></h6>
-                    <select name="qauntity" class="custom-select mb-3">
-                          <option selected>Select Quantity</option>
-                          <option value="volvo">1</option>
-                          <option value="fiat">2</option>
-                          <option value="audi">3</option>
-                    </select>
+                <form method="POST" action="" class="text">
+                    {{ form.hidden_tag() }}						 
+                    <div class="form-group">
+                        <h6>{{ form.quantity.label(class="form-control-label") }}</h6>
+                        {% if form.quantity.errors %}
+                            {{ form.quantity(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.quantity.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.quantity(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.buy(class="btn btn-outline-warning btn-lg p-3 pb-2 btn-block") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.add(class="btn btn-outline-warning btn-lg p-3 pb-2 btn-block") }}
+                    </div>
                 </form>
-                <div class="pt-3">
-                    <button class="btn btn-warning text-light btn-lg p-3 pb-2 btn-block" type="button" data-button-text="buy-now">
-                        <b><i class="fas fa-bolt"></i> BUY NOW</b>
-                    </button>
-                    <button class="btn btn-danger btn-lg p-3 pb-2 btn-block" type="button" data-button-text="add-to-cart">
-                        <b><i class="fas fa-shopping-cart"></i> ADD TO CART</b>
-                    </button>
-                </div>
             </aside>				
         </div>
         <span class="pb-4"></span>

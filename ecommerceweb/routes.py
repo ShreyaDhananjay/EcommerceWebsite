@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request
 from ecommerceweb import app, db, bcrypt
-from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm
-from ecommerceweb.dbmodel import User, Product, Category
+from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm
+from ecommerceweb.dbmodel import User, Product, Category, Cart
 from flask_login import login_user, current_user, logout_user, login_required
 import base64
 
@@ -9,45 +9,6 @@ import base64
 @app.route("/home")
 def home():
     return render_template('home.html')
-
-@app.route("/<string:catname>")
-def categorypage(catname):
-    c=0
-    title=""
-    if catname=="handicrafts":
-        c=1
-        title="Handicrafts"
-    elif catname=="homedecor":
-        c=2
-        title="Home Decor"
-    elif catname=="ayurvedicproducts":
-        c=3
-        title="Ayurvedic Products"
-    elif catname=="khadiclothproducts":
-        c=4
-        title="Khadi Cloth Products"
-    else:
-        c=5
-        title="Jewellery"
-    prod=Product.query.filter_by(category_id=c).all()
-    img=[]
-    for p in prod:
-        img.append(base64.b64encode(p.image_file1).decode('ascii'))
-    return render_template('category.html', prod=prod, img=img, l=len(prod), title=title)
-
-@app.route("/product<int:id>")
-def product(id):
-    prod=Product.query.filter_by(pid=id).first_or_404("This product does not exist")
-    img=[]
-    img.append(base64.b64encode(prod.image_file1).decode('ascii'))
-    if prod.image_file2:
-        img.append(base64.b64encode(prod.image_file2).decode('ascii'))
-    if prod.image_file3:
-        img.append(base64.b64encode(prod.image_file3).decode('ascii'))
-    if prod.image_file4:
-        img.append(base64.b64encode(prod.image_file4).decode('ascii'))
-    return render_template('product_desc.html', title='Product Details', prod=prod, img=img)
-
 
 @app.route("/signup", methods=['GET', 'POST'])
 def register():
@@ -119,3 +80,73 @@ def account():
 
     return render_template('account.html', title='Account', form=form)
    
+
+@app.route("/<string:catname>")
+def categorypage(catname):
+    c=0
+    title=""
+    if catname=="handicrafts":
+        c=1
+        title="Handicrafts"
+    elif catname=="homedecor":
+        c=2
+        title="Home Decor"
+    elif catname=="ayurvedicproducts":
+        c=3
+        title="Ayurvedic Products"
+    elif catname=="khadiclothproducts":
+        c=4
+        title="Khadi Cloth Products"
+    else:
+        c=5
+        title="Jewellery"
+    prod=Product.query.filter_by(category_id=c).all()
+    img=[]
+    for p in prod:
+        img.append(base64.b64encode(p.image_file1).decode('ascii'))
+    return render_template('category.html', prod=prod, img=img, l=len(prod), title=title)
+
+@app.route("/product<int:id>", methods=['GET', 'POST'])
+def product(id):
+    prod=Product.query.filter_by(pid=id).first_or_404("This product does not exist")
+    img=[]
+    img.append(base64.b64encode(prod.image_file1).decode('ascii'))
+    if prod.image_file2:
+        img.append(base64.b64encode(prod.image_file2).decode('ascii'))
+    if prod.image_file3:
+        img.append(base64.b64encode(prod.image_file3).decode('ascii'))
+    if prod.image_file4:
+        img.append(base64.b64encode(prod.image_file4).decode('ascii'))
+    form=QuantityForm()
+    if form.validate_on_submit():
+        if form.buy.data:
+            return redirect(url_for('checkout'))
+        elif form.add.data:
+            if(form.quantity.data > prod.stock):
+                s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
+                flash(s, 'danger')
+            else:
+                c = Cart(uid=current_user.id, pid=id, quantity=form.quantity.data)
+                db.session.add(c)
+                db.session.commit()
+                flash('The product was added to your cart!', 'success')
+    return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form)
+
+@app.route("/cart")
+@login_required
+def cart():
+    c = Cart.query.filter_by(uid=current_user.id).all()
+    #print(c[0].quantity, len(c))
+    p=[]
+    cost=[]
+    for i in range(len(c)):
+        prod = Product.query.filter_by(pid=c[i].pid).first()
+        p.append(prod.name)
+        cost.append(prod.cost * c[i].quantity)
+    total=sum(cost)
+    return render_template('cart.html', title='Cart', p=p, cost=cost, c=c, total=total, l=len(c))
+
+@app.route("/checkout")
+@login_required 
+def checkout():
+    pass
