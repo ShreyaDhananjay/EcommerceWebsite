@@ -3,6 +3,9 @@
 <center> 
     <h2><span class="title">{{ title }}</span></h2>
     <div class="container">
+        {% if l==0 %}
+        <h6>Your cart is empty!</h6>
+        {% else %}
         <div class="row">
                 <div class="table-responsive table-condensed table_style">
                     <table class="table table-bordered table-striped table-hover">
@@ -25,7 +28,7 @@
                                 <td><b><span class="currency">₹</span>{{ total }}</b></td>
                             </tr>
                             <tr>
-                                <td colspan="3"><a href="#"><center><button class="btn btn-outline-primary">Confirm
+                                <td colspan="3"><a href="{{ url_for('payment')}}"><center><button class="btn btn-outline-primary">Confirm
                                     Order</button></center></a>
                                 </td>
                             </tr>
@@ -33,6 +36,7 @@
                     </table>
                 </div>
         </div>
+        {% endif %}
     </div>
 </center>
 {% endblock content%}

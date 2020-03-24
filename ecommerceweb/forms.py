@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, SelectField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from ecommerceweb.dbmodel import User
 
 
@@ -53,3 +53,8 @@ class QuantityForm(FlaskForm):
     quantity = IntegerField('Quantity', validators=[DataRequired()], default=1)
     buy = SubmitField('Buy Now')
     add = SubmitField('Add to Cart')
+
+class PaymentDetails(FlaskForm):
+    upiid = StringField('UPI ID', validators=[DataRequired(), Email()])
+    upipin = PasswordField('UPI Pin', validators=[DataRequired()])#, NumberRange(min=0, max=9999)])
+    pay = SubmitField('Pay Now!')

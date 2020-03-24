@@ -2,6 +2,7 @@ from ecommerceweb import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -74,8 +75,8 @@ class UserTransac(db.Model):
     transac_id = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), nullable=False)
     oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
-    upiid = db.Column(db.String(120), unique=True, nullable=False)
-    upipin = db.Column(db.Integer, unique=True, nullable=False)
+    upiid = db.Column(db.String(120), nullable=False)
+    #upipin = db.Column(db.Integer, unique=True, nullable=False)
     transac_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     transac_details = db.Column(db.String(100))
 

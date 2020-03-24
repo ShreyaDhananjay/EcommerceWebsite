@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block content %}
+<center>
+    <div class="content-section" style="width: 45%;">
+        <form method="POST" action="" class="text">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <b><span class="title"><legend class="border-bottom mb-4" >Enter payment details</legend></span></b>
+                <div class="form-group">
+                    {{ form.upiid.label(class="form-control-label") }}
+                    {% if form.upiid.errors %}
+                        {{ form.upiid(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.upiid.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.upiid(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.upipin.label(class="form-control-label") }}
+                    {% if form.upipin.errors %}
+                        {{ form.upipin(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.upipin.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.upipin(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.pay(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+</center>
+{% endblock content %}
