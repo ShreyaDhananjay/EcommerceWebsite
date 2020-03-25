@@ -14,21 +14,24 @@
                                 <th>Item Name</th>
                                 <th>Quantity</th>
                                 <th>Total Cost</th>
+                                <th></th>
                             </tr>
                             {% for i in range(l)%}
                                 <tr>
                                     <td>{{ p[i] }}</td>
                                     <td>{{ c[i].quantity}}</td>
                                     <td><span class="currency">₹</span>{{ cost[i] }}</td>
+                                    <td><a href="{{ url_for('removeitem', id=c[i].pid) }}"><button class="btn btn-outline-danger">Remove Item</button></a></td>
                                 </tr>
                             {% endfor %}
                             <tr>
                                 <td></td>
                                 <td><b>Total</b></td>
                                 <td><b><span class="currency">₹</span>{{ total }}</b></td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <td colspan="3"><a href="{{ url_for('payment')}}"><center><button class="btn btn-outline-primary">Confirm
+                                <td colspan="4"><a href="{{ url_for('payment')}}"><center><button class="btn btn-outline-primary">Confirm
                                     Order</button></center></a>
                                 </td>
                             </tr>

@@ -67,8 +67,10 @@ class Order(db.Model):
     oid = db.Column(db.Integer, primary_key=True)
     uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), nullable=False)
     pid = db.Column(db.Integer, db.ForeignKey(Product.__table__.c.pid), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    total = db.Column(db.Integer, nullable=False)
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    order_status = db.Column(db.Integer, nullable=False)
+    order_status = db.Column(db.String, nullable=False)
 
 class UserTransac(db.Model):
     __tablename__="usertransac"
@@ -76,7 +78,8 @@ class UserTransac(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), nullable=False)
     oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
     upiid = db.Column(db.String(120), nullable=False)
-    #upipin = db.Column(db.Integer, unique=True, nullable=False)
+    quantity = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.quantity), nullable=False)
+    total = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.total), nullable=False)
     transac_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     transac_details = db.Column(db.String(100))
 

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block content %}
+<center> 
+    <h2><span class="title">{{ title }}</span></h2>
+    <br><br>
+    <div class="container">
+        {% if l==0 %}
+        <h6>You haven't ordered anything yet!</h6>
+        {% else %}
+        <div class="row">
+            {% for j in range(l) %}
+            <div class="ml-5 mr-5 mb-5">
+                <h4>Order {{j+1}}</h4>
+                <table class="table table-responsive table-condensed table_style table-borderless table-hover">
+                    <tbody>
+                        <tr>
+                            <th>Item Name</th>
+                            <td>{{ pname[j] }}</td>
+                        </tr>
+                        <tr>
+                            <th>Quantity</th>
+                            <td>{{ order[j].quantity }}</td>
+                        </tr>
+                        <tr>
+                            <th>Total Cost</th>
+                            <td><span class="currency">₹</span>{{ order[j].total }}</td>
+                        </tr>
+                        <tr>
+                            <th>Order Date</th>
+                            <td>{{ order[j].order_date.strftime('%d-%m-%Y') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Order Status</th>
+                            <td>{{ order[j].order_status }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</center>
+{% endblock content%}

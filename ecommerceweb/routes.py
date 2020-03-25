@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, session
 from ecommerceweb import app, db, bcrypt
 from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm, PaymentDetails
 from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order
@@ -36,6 +36,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
+            if 'url' in session and session['url'] != None:
+                return redirect(session['url'])
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
@@ -101,9 +103,11 @@ def categorypage(catname):
     elif catname=="khadiclothproducts":
         c=4
         title="Khadi Cloth Products"
-    else:
+    elif catname=="jewellery":
         c=5
         title="Jewellery"
+    else:
+        return redirect(url_for('home'))
     prod=Product.query.filter_by(category_id=c).all()
     img=[]
     for p in prod:
@@ -112,6 +116,7 @@ def categorypage(catname):
 
 @app.route("/product<int:id>", methods=['GET', 'POST'])
 def product(id):
+    session['url'] = None
     global b
     prod=Product.query.filter_by(pid=id).first_or_404("This product does not exist")
     img=[]
@@ -124,26 +129,31 @@ def product(id):
         img.append(base64.b64encode(prod.image_file4).decode('ascii'))
     form=QuantityForm()
     if form.validate_on_submit():
-        if form.buy.data:
-            if(form.quantity.data > prod.stock):
-                s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
-                flash(s, 'danger')
-            else:
-                l=[]
-                b=[]
-                user = User.query.filter_by(id=current_user.id).first()
-                l.extend([user.name, id, prod.name, form.quantity.data, prod.cost*form.quantity.data])
-                b.append(l)
-                return redirect(url_for('payment'))
-        elif form.add.data:
-            if(form.quantity.data > prod.stock):
-                s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
-                flash(s, 'danger')
-            else:
-                c = Cart(uid=current_user.id, pid=id, quantity=form.quantity.data)
-                db.session.add(c)
-                db.session.commit()
-                flash('The product was added to your cart!', 'success')
+        if not current_user.is_authenticated:
+            session['url'] = url_for('product', id=id)
+            flash('You must log in first', 'danger')  
+            return redirect(url_for('login'))
+        else:
+            if form.buy.data:
+                if(form.quantity.data > prod.stock):
+                    s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
+                    flash(s, 'danger')
+                else:
+                    l=[]
+                    b=[]
+                    user = User.query.filter_by(id=current_user.id).first()
+                    l.extend([user.name, id, prod.name, form.quantity.data, prod.cost*form.quantity.data])
+                    b.append(l)
+                    return redirect(url_for('payment'))
+            elif form.add.data:
+                if(form.quantity.data > prod.stock):
+                    s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
+                    flash(s, 'danger')
+                else:
+                    c = Cart(uid=current_user.id, pid=id, quantity=form.quantity.data)
+                    db.session.add(c)
+                    db.session.commit()
+                    flash('The product was added to your cart!', 'success')
     return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form)
 
 @app.route("/cart")
@@ -152,6 +162,34 @@ def cart():
     c = Cart.query.filter_by(uid=current_user.id).all()
     p=[]
     cost=[]
+    for i in range(len(c)):
+        prod = Product.query.filter_by(pid=c[i].pid).first()
+        p.append(prod.name)
+        cost.append(prod.cost * c[i].quantity)
+    total=sum(cost)
+    return render_template('cart.html', title='Cart', p=p, cost=cost, c=c, total=total, l=len(c))
+
+@app.route("/removeitem<int:id>")
+@login_required
+def removeitem(id):
+    c = Cart.query.filter_by(uid=current_user.id).all()
+    if len(c)==0:
+        flash('No item to remove from cart', 'warning')
+        return redirect(url_for('home'))
+    else:
+        flag = False
+        for i in range(len(c)):
+            if id == c[i].pid:
+                flag = True
+                Cart.query.filter_by(uid=current_user.id, pid=id).delete()
+                db.session.commit()
+                flash('The item was removed from the cart', 'success')
+                break
+        if not flag:
+            flash('Item not present in cart', 'warning')
+    p=[]
+    cost=[]
+    c = Cart.query.filter_by(uid=current_user.id).all()
     for i in range(len(c)):
         prod = Product.query.filter_by(pid=c[i].pid).first()
         p.append(prod.name)
@@ -171,14 +209,14 @@ def payment():
     elif c==[]:
         form = PaymentDetails()
         if form.validate_on_submit():
-            o = Order(uid=current_user.id, pid=b[0][1], order_status="Ordered")
+            p = Product.query.filter_by(pid=b[0][1]).first()
+            o = Order(uid=current_user.id, pid=b[0][1], order_status="Ordered", quantity=b[0][3], total=p.cost*b[0][3])
             db.session.add(o)
             db.session.commit()
-            u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data)
+            u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=b[0][3], total=p.cost*b[0][3])
             db.session.add(u)
             db.session.commit()
             flash('Your order was processed successfully!', 'success')
-            p = Product.query.filter_by(pid=b[0][1]).first()
             p.stock-=int(b[0][3])
             db.session.commit()
             return redirect(url_for('checkout'))
@@ -193,10 +231,10 @@ def payment():
                 l=[]
                 prod = Product.query.filter_by(pid=c[i].pid).first()
                 cost.append(prod.cost * c[i].quantity)
-                o = Order(uid=current_user.id, pid=c[i].pid, order_status="Ordered")
+                o = Order(uid=current_user.id, pid=c[i].pid, order_status="Ordered", quantity=c[i].quantity, total=cost[i])
                 db.session.add(o)
                 db.session.commit()
-                u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data)
+                u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=c[i].quantity, total=cost[i])
                 db.session.add(u)
                 db.session.commit()
                 prod.stock-=c[i].quantity
@@ -216,3 +254,13 @@ def checkout():
     print(b1)
     b=[]
     return render_template('checkout.html', inv=b1, length=len(b1))
+
+@app.route("/orders")
+@login_required     
+def orders():
+    order = Order.query.filter_by(uid=current_user.id).all()
+    pname=[]
+    for i in range(len(order)):
+        p = Product.query.filter_by(pid=order[i].pid).first()
+        pname.append(p.name)
+    return render_template('orders.html', title='Your Orders', order=order, l=len(order), pname=pname)
