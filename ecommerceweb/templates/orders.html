@@ -27,7 +27,7 @@
                         </tr>
                         <tr>
                             <th>Order Date</th>
-                            <td>{{ order[j].order_date.strftime('%d-%m-%Y') }}</td>
+                            <td>{{ moment(order[j].order_date).format('MMMM Do YYYY, h:mm:ss a') }}</td>
                         </tr>
                         <tr>
                             <th>Order Status</th>
