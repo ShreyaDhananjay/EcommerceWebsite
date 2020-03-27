@@ -78,8 +78,8 @@ class UserTransac(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), nullable=False)
     oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
     upiid = db.Column(db.String(120), nullable=False)
-    quantity = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.quantity), nullable=False)
-    total = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.total), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    total = db.Column(db.Integer, nullable=False)
     transac_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     transac_details = db.Column(db.String(100))
 
@@ -88,15 +88,21 @@ class Shipping(db.Model):
     ship_id = db.Column(db.Integer, primary_key=True)
     oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
     transac_id = db.Column(db.Integer, db.ForeignKey(UserTransac.__table__.c.transac_id), nullable=False)
-    tracking_no = db.Column(db.Numeric(12,0), unique=True, nullable=False)
+    tracking_no = db.Column(db.Numeric(12,0), unique=True)#, nullable=False)
     delivery_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     details = db.Column(db.String(100))
+    contactno = db.Column(db.Integer, unique=True, nullable=False)
+    address_line1 = db.Column(db.String(50), nullable=False)
+    address_line2 = db.Column(db.String(50))
+    address_line3 = db.Column(db.String(50))
+    pincode = db.Column(db.Integer, nullable=False)
+    city = db.Column(db.String(50), nullable=False)
+    state = db.Column(db.String(50), nullable=False)
+    country = db.Column(db.String(50), nullable=False)
+
 
 class Cart(db.Model):
     __tablename__="cart"
     uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), primary_key=True)
     pid = db.Column(db.Integer, db.ForeignKey(Product.__table__.c.pid), primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
-
-
-

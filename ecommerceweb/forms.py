@@ -57,4 +57,12 @@ class QuantityForm(FlaskForm):
 class PaymentDetails(FlaskForm):
     upiid = StringField('UPI ID', validators=[DataRequired(), Email()])
     upipin = PasswordField('UPI Pin', validators=[DataRequired()])#, NumberRange(min=0, max=9999)])
-    pay = SubmitField('Pay Now!')
+    contactno = IntegerField('Contact Number', validators=[DataRequired()])
+    addr1 = StringField('Address Line 1', validators=[DataRequired(), Length(min=1, max=50)])
+    addr2 = StringField('Address Line 2', validators=[Length(max=50)])
+    addr3 = StringField('Address Line 3', validators=[Length(max=50)])
+    pincode = IntegerField('Pincode', validators=[DataRequired()])
+    city = StringField('City', validators=[DataRequired(), Length(max=50)])
+    state = StringField('State', validators=[DataRequired(), Length(max=50)])
+    country = StringField('Country', validators=[DataRequired(), Length(max=50)])
+    submit = SubmitField('Confirm Details')

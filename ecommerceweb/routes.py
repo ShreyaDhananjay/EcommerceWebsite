@@ -1,11 +1,11 @@
 from flask import render_template, url_for, flash, redirect, request, session
 from ecommerceweb import app, db, bcrypt
 from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm, PaymentDetails
-from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order
+from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping
 from flask_login import login_user, current_user, logout_user, login_required
 import base64
 
-b=[]
+b = []
 
 @app.route("/")
 @app.route("/home")
@@ -48,7 +48,7 @@ def login():
 @app.route("/logout")
 def logout():
     global b
-    b=[]
+    b = []
     logout_user()
     return redirect(url_for('home'))
 
@@ -72,7 +72,6 @@ def account():
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
     elif request.method == 'GET':
-        print(current_user.name)
         form.name.data = current_user.name
         form.email.data = current_user.email
         form.contactno.data = current_user.contactno
@@ -136,15 +135,16 @@ def product(id):
         else:
             if form.buy.data:
                 if(form.quantity.data > prod.stock):
-                    s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
+                    s = 'Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
                     flash(s, 'danger')
                 else:
-                    l=[]
-                    b=[]
+                    l = []
+                    b = []
                     user = User.query.filter_by(id=current_user.id).first()
                     l.extend([user.name, id, prod.name, form.quantity.data, prod.cost*form.quantity.data])
                     b.append(l)
-                    return redirect(url_for('payment'))
+                    print(b)
+                    return redirect(url_for('checkout'))
             elif form.add.data:
                 if(form.quantity.data > prod.stock):
                     s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
@@ -197,16 +197,16 @@ def removeitem(id):
     total=sum(cost)
     return render_template('cart.html', title='Cart', p=p, cost=cost, c=c, total=total, l=len(c))
 
-@app.route("/payment", methods=['GET', 'POST'])
+@app.route("/checkout", methods=['GET', 'POST'])
 @login_required 
-def payment():
+def checkout():
     global b
+    print(b)
     c = Cart.query.filter_by(uid=current_user.id).all()
-    print(c)
     if c==[] and b==[]:
         flash('No product has been selected', 'warning')
         return redirect(url_for('home'))
-    elif c==[]:
+    elif len(b)!=0:
         form = PaymentDetails()
         if form.validate_on_submit():
             p = Product.query.filter_by(pid=b[0][1]).first()
@@ -216,12 +216,27 @@ def payment():
             u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=b[0][3], total=p.cost*b[0][3])
             db.session.add(u)
             db.session.commit()
+            shipping = Shipping(oid=o.oid, transac_id=u.transac_id, contactno=form.contactno.data, address_line1=form.addr1.data, 
+                                address_line2=form.addr2.data, address_line3=form.addr3.data, pincode=form.pincode.data, 
+                                city=form.city.data, state=form.state.data, country=form.country.data)
+            db.session.add(shipping)
+            db.session.commit()
             flash('Your order was processed successfully!', 'success')
             p.stock-=int(b[0][3])
             db.session.commit()
-            return redirect(url_for('checkout'))
-        return render_template('payment.html', title='Payment Details', form=form)
-    elif b==[]:
+            print('before invoice')
+            return redirect(url_for('invoice'))
+        elif request.method == 'GET':
+            form.contactno.data = current_user.contactno
+            form.addr1.data = current_user.address_line1
+            form.addr2.data = current_user.address_line2
+            form.addr3.data = current_user.address_line3
+            form.pincode.data = current_user.pincode
+            form.city.data = current_user.city
+            form.state.data = current_user.state
+            form.country.data = current_user.country
+        return render_template('checkout.html', title='Checkout', form=form)
+    else:
         print('cart has some products')
         user = User.query.filter_by(id=current_user.id).first()
         form = PaymentDetails()
@@ -237,29 +252,45 @@ def payment():
                 u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=c[i].quantity, total=cost[i])
                 db.session.add(u)
                 db.session.commit()
+                shipping = Shipping(oid=o.oid, transac_id=u.transac_id, contactno=form.contactno.data, address_line1=form.addr1.data, 
+                                    address_line2=form.addr2.data, address_line3=form.addr3.data, pincode=form.pincode.data, 
+                                    city=form.city.data, state=form.state.data, country=form.country.data)
+                db.session.add(shipping)
+                db.session.commit()
                 prod.stock-=c[i].quantity
                 db.session.commit()
                 l.extend([user.name, prod.pid, prod.name, c[i].quantity, cost[i]])
                 b.append(l)
+                flash('Your order was processed successfully!', 'success')
             Cart.query.filter_by(uid=user.id).delete()
             db.session.commit()
-            return redirect(url_for('checkout'))
-        return render_template('payment.html', title='Payment Details', form=form)
+            return redirect(url_for('invoice'))
+        elif request.method == 'GET':
+            form.contactno.data = current_user.contactno
+            form.addr1.data = current_user.address_line1
+            form.addr2.data = current_user.address_line2
+            form.addr3.data = current_user.address_line3
+            form.pincode.data = current_user.pincode
+            form.city.data = current_user.city
+            form.state.data = current_user.state
+            form.country.data = current_user.country
 
-@app.route("/checkout")
+        return render_template('checkout.html', title='Checkout', form=form)
+
+@app.route("/invoice")
 @login_required 
-def checkout():
+def invoice():
     global b
-    b1=b
+    b1 = b
     print(b1)
-    b=[]
-    return render_template('checkout.html', inv=b1, length=len(b1))
+    b = []
+    return render_template('invoice.html', inv=b1, length=len(b1))
 
 @app.route("/orders")
 @login_required     
 def orders():
     order = Order.query.filter_by(uid=current_user.id).all()
-    pname=[]
+    pname = []
     for i in range(len(order)):
         p = Product.query.filter_by(pid=order[i].pid).first()
         pname.append(p.name)

@@ -1,32 +1,150 @@
 {% extends "layout.html" %}
 {% block content %}
-<center>
-    <h2><span class="title">Your Invoice</span></h2>
-    <div class="row">
-        <div class="table-responsive table-condensed table_style ml-5 mr-5">
-            <table class="table table-bordered table-striped table-hover">
-                <tbody>
-                    <tr>
-                        <th>Item Name</th>
-                        {% for i in range(length) %}
-                            <td>{{ inv[i][2] }}</td>
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <th>Quantity</th>
-                        {% for i in range(length) %}
-                            <td>{{ inv[i][3]}}</td>
-                        {% endfor %}
-                    </tr>
-                    <tr>
-                        <th>Cost</th>
-                        {% for i in range(length) %}
-                            <td><span class="currency">₹</span>{{ inv[i][4] }}</td>
-                        {% endfor %}
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <center>
+        <h2 class="title">Checkout</h2>
+    <div class="content-section" style="width: 50%;">
+        <form method="POST" action="" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4" >Payment Details</legend>
+                <div class="form-group">
+                    {{ form.upiid.label(class="form-control-label") }}
+                    {% if form.upiid.errors %}
+                        {{ form.upiid(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.upiid.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.upiid(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.upipin.label(class="form-control-label") }}
+                    {% if form.upipin.errors %}
+                        {{ form.upipin(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.upipin.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.upipin(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Shipping Details</legend>
+                <div class="form-group">
+                    {{ form.contactno.label(class="form-control-label") }}
+                    {% if form.contactno.errors %}
+                        {{ form.contactno(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.contactno.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.contactno(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.addr1.label(class="form-control-label") }}
+                    {% if form.addr1.errors %}
+                        {{ form.addr1(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.addr1.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.addr1(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.addr2.label(class="form-control-label") }}
+                    {% if form.addr2.errors %}
+                        {{ form.addr2(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.addr2.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.addr2(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.addr3.label(class="form-control-label") }}
+                    {% if form.addr3.errors %}
+                        {{ form.addr3(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.addr3.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.addr3(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.pincode.label(class="form-control-label") }}
+                    {% if form.pincode.errors %}
+                        {{ form.pincode(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.pincode.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.pincode(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.city.label(class="form-control-label") }}
+                    {% if form.city.errors %}
+                        {{ form.city(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.city.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.city(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.state.label(class="form-control-label") }}
+                    {% if form.state.errors %}
+                        {{ form.state(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.state.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.state(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.country.label(class="form-control-label") }}
+                    {% if form.country.errors %}
+                        {{ form.country(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.country.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.country(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
     </div>
-</center>
-{% endblock content %}
+    </center>
+{% endblock content%}
