@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<center> 
+    <h2><span class="title">{{ title }}</span></h2>
+    <br><br>
+    <div class="container">
+        <div class="row">
+                <div class="table-responsive table-condensed table_style">
+                    <table class="table table-bordered table-hover">    
+                        <tbody>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <td>{{ transaction.transac_id }}</td>
+                            </tr>
+                            <tr>
+                                <th>Order ID</th>
+                                <td>{{ transaction.oid }}</td>
+                            </tr>
+                            <tr>
+                                <th>UPI ID</th>
+                                <td>{{ transaction.upiid }}</td>
+                            </tr>
+                            <tr>
+                                <th>Quantity</th>
+                                <td>{{ transaction.quantity }}</td>
+                            </tr>
+                            <tr>
+                                <th>Total Cost</th>
+                                <td><span class="currency">₹</span>{{ transaction.total }}</td>
+                            </tr>
+                            <tr>
+                                <th>Date of transaction</th>
+                                <td>{{ moment(transaction.transac_date).format('MMMM Do YYYY, h:mm a') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+</center>
+{% endblock content%}

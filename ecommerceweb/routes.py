@@ -3,6 +3,7 @@ from ecommerceweb import app, db, bcrypt
 from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm, PaymentDetails
 from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping
 from flask_login import login_user, current_user, logout_user, login_required
+from datetime import datetime, timedelta
 import base64
 
 b = []
@@ -216,9 +217,10 @@ def checkout():
             u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=b[0][3], total=p.cost*b[0][3])
             db.session.add(u)
             db.session.commit()
-            shipping = Shipping(oid=o.oid, transac_id=u.transac_id, contactno=form.contactno.data, address_line1=form.addr1.data, 
-                                address_line2=form.addr2.data, address_line3=form.addr3.data, pincode=form.pincode.data, 
-                                city=form.city.data, state=form.state.data, country=form.country.data)
+            delivery_date=datetime.utcnow()+timedelta(days=4)
+            shipping = Shipping(oid=o.oid, transac_id=u.transac_id, delivery_date=delivery_date, contactno=form.contactno.data, 
+                                address_line1=form.addr1.data, address_line2=form.addr2.data, address_line3=form.addr3.data, 
+                                pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data)
             db.session.add(shipping)
             db.session.commit()
             flash('Your order was processed successfully!', 'success')
@@ -252,9 +254,10 @@ def checkout():
                 u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=c[i].quantity, total=cost[i])
                 db.session.add(u)
                 db.session.commit()
-                shipping = Shipping(oid=o.oid, transac_id=u.transac_id, contactno=form.contactno.data, address_line1=form.addr1.data, 
-                                    address_line2=form.addr2.data, address_line3=form.addr3.data, pincode=form.pincode.data, 
-                                    city=form.city.data, state=form.state.data, country=form.country.data)
+                delivery_date=datetime.utcnow()+timedelta(days=4)
+                shipping = Shipping(oid=o.oid, transac_id=u.transac_id, delivery_date=delivery_date, contactno=form.contactno.data, 
+                                    address_line1=form.addr1.data, address_line2=form.addr2.data, address_line3=form.addr3.data, 
+                                    pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data)
                 db.session.add(shipping)
                 db.session.commit()
                 prod.stock-=c[i].quantity
@@ -291,7 +294,29 @@ def invoice():
 def orders():
     order = Order.query.filter_by(uid=current_user.id).all()
     pname = []
+    txn = []
     for i in range(len(order)):
         p = Product.query.filter_by(pid=order[i].pid).first()
         pname.append(p.name)
-    return render_template('orders.html', title='Your Orders', order=order, l=len(order), pname=pname)
+        t = UserTransac.query.filter_by(oid=order[i].oid).first_or_404()
+        txn.append(t.transac_id)
+    return render_template('orders.html', title='Your Orders', order=order, l=len(order), pname=pname, txn=txn)
+
+@app.route("/transaction<int:transac_id>")
+@login_required     
+def transaction(transac_id):
+    transaction = UserTransac.query.filter_by(transac_id=transac_id).first_or_404()
+    if transaction.uid != current_user.id:
+        flash('You do not have the authority to view that transaction', 'warning')
+        return redirect(url_for('home'))
+    return render_template('transaction.html',title='Transaction Details', transaction=transaction)
+
+@app.route("/shipping<int:id>")
+@login_required     
+def shipping(id):
+    ship = Shipping.query.filter_by(oid=id).first_or_404()
+    order = Order.query.filter_by(oid=id).first_or_404()
+    if order.uid != current_user.id:
+        flash('You do not have the authority to visit this page', 'warning')
+        return redirect(url_for('home'))
+    return render_template('ship.html',title='Shipping Details', ship=ship)

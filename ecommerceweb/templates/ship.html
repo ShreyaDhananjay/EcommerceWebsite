@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block content %}
+<center> 
+    <h2><span class="title">{{ title }}</span></h2>
+    <br><br>
+    <div class="container">
+        <div class="row">
+            <div class="table-responsive table-condensed table_style">
+                <table class="table table-bordered table-hover">    
+                    <tbody>
+                        <tr>
+                            <th>Shipping ID</th>
+                            <td>{{ ship.ship_id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Order ID</th>
+                            <td>{{ ship.oid }}</td>
+                        </tr>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <td>{{ ship.transac_id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Expected Delivery Date</th>
+                            <td>{{ moment(ship.delivery_date).format('MMMM Do YYYY') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>Delivery Address</h4>
+                <table class="table table-bordered table-hover">    
+                    <tbody>
+                        <tr>
+                            <th>Contact No</th>
+                            <td>{{ ship.contactno }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address Line 1</th>
+                            <td>{{ ship.address_line1 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address Line 2</th>
+                            <td>{{ ship.address_line2 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address Line 3</th>
+                            <td>{{ ship.address_line3 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pincode</th>
+                            <td>{{ ship.pincode }}</td>
+                        </tr>
+                        <tr>
+                            <th>City</th>
+                            <td>{{ ship.city }}</td>
+                        </tr>
+                        <tr>
+                            <th>State</th>
+                            <td>{{ ship.state }}</td>
+                        </tr>
+                        <tr>
+                            <th>Country</th>
+                            <td>{{ ship.country }}</td>
+                        </tr>
+                    </tbody>
+                </table> 
+            </div>
+        </div>
+    </div>
+</center>
+{% endblock content%}
