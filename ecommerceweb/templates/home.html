@@ -41,27 +41,27 @@
     <h2 class="title"><center>Deals of the Day</center></h2>
     <div class="card-columns">
         <div class="card" style="width:100%">
-            <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery13.jpg') }}" alt="Card image" style="width:100%"></a>
+            <a href="{{url_for('product', id=7)}}"><img class="card-img-top" src="{{ url_for('static', filename='ayurveda51.png') }}" alt="Card image" style="width:100%"></a>
             <div class="card-body">
-            <h4 class="card-title">Sling Bag</h4>
-            <p class="card-text">A durable and trendy handmade bag, only for Rs. 300! </p>
-            <a href="#" class="btn btn-primary">Add to Cart</a>
+            <h4 class="card-title"><center>Ayurvedic Scrub Mask</center></h4>
+            <p class="card-text"><center>This nourishing, 2-in-1 scrub mask exfoliates and revitalizes your skin!</center></p>
+            <center><a href="{{url_for('product', id=7)}}" class="btn btn-primary">See More</a></center>
             </div>
         </div>
         <div class="card" style="width:100%">
-            <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='spices.jpg') }}" alt="Card image" style="width:100%"></a>
+            <a href="{{url_for('categorypage', catname='jewellery')}}"><img class="card-img-top" src="{{ url_for('static', filename='j11.jpg') }}" alt="Card image" style="width:100%"></a>
             <div class="card-body">
-            <h4 class="card-title">Spices</h4>
-            <p class="card-text">Check out our fresh homemade spices!</p>
-            <a href="#" class="btn btn-primary">See more</a>
+            <h4 class="card-title"><center>Jewellery</center></h4>
+            <p class="card-text"><center>Check out our handmade jewellery!</center></p>
+            <center><a href="{{url_for('categorypage', catname='jewellery')}}" class="btn btn-primary">See more</a></center>
             </div>
         </div>
         <div class="card" style="width:100%">
-            <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery25.jpg') }}" alt="Card image" style="width:100%"></a>
+            <a href="{{url_for('categorypage', catname='homedecor')}}"><img class="card-img-top" src="{{ url_for('static', filename='gallery25.jpg') }}" alt="Card image" style="width:100%"></a>
             <div class="card-body">
-            <h4 class="card-title">Home Decor</h4>
-            <p class="card-text">Exclusive deals on home decor!</p>
-            <a href="{{url_for('categorypage', catname='homedecor')}}" class="btn btn-primary">See more</a>
+            <h4 class="card-title"><center>Home Decor</center></h4>
+            <p class="card-text"><center>Exclusive deals on home decor!</center></p>
+            <center><a href="{{url_for('categorypage', catname='homedecor')}}" class="btn btn-primary">See more</a></center>
             </div>
         </div>
     
