@@ -155,9 +155,14 @@ def product(id):
                     s='Requested quantity exceeds stock. Only {stock} pieces available'.format(stock=prod.stock)
                     flash(s, 'danger')
                 else:
-                    c = Cart(uid=current_user.id, pid=id, quantity=form.quantity.data)
-                    db.session.add(c)
-                    db.session.commit()
+                    cart = Cart.query.filter_by(pid=id).first()
+                    if cart != None:
+                        cart.quantity += form.quantity.data
+                        db.session.commit()
+                    else:
+                        c = Cart(uid=current_user.id, pid=id, quantity=form.quantity.data)
+                        db.session.add(c)
+                        db.session.commit()
                     flash('The product was added to your cart!', 'success')
     return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form)
 

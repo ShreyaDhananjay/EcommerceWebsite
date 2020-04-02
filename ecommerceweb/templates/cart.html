@@ -2,9 +2,11 @@
 {% block content %}
 <center> 
     <h2><span class="title">{{ title }}</span></h2>
-    <div class="container">
+    <div class="container" style="min-height: 100vh;">
         {% if l==0 %}
-        <h6>Your cart is empty!</h6>
+        <div class="content-section">
+            <h6>Your cart is empty!</h6>
+        </div>
         {% else %}
         <div class="row">
                 <div class="table-responsive table-condensed table_style">
