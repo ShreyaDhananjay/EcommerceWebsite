@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container-fluid" style="background-color: white;">
-   <center> <h2><span class="title">Featured Products</span></h2></center>
+   <center> <h2 style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">If it's Indian, it's on desioriginals.com!</h2></center>
   <div id="demo" class="carousel slide" data-ride="carousel">
 
     <!-- Indicators -->
@@ -14,16 +14,19 @@
     <!-- The slideshow -->
     <div class="carousel-inner">
       <div class="carousel-item active">
-        <img src="{{ url_for('static', filename='gallery24.jpg') }}">
+       <img src="{{ url_for('static', filename='carousel1.jpg') }}">
       </div>
       <div class="carousel-item">
-        <img src="{{ url_for('static', filename='gallery4.jpg') }}">
+      <a href="{{ url_for('categorypage', catname='khadiclothproducts') }}"> 
+        <img src="{{ url_for('static', filename='carousel2.jpg') }}"></a>
       </div>
       <div class="carousel-item">
-        <img src="{{ url_for('static', filename='gallery8.jpg') }}">
+        <a href="{{ url_for('categorypage', catname='ayurvedicproducts') }}"> 
+        <img src="{{ url_for('static', filename='carousel3.jpg') }}"></a>
       </div>
       <div class="carousel-item">
-        <img src="{{ url_for('static', filename='gallery21.jpg') }}">
+        <a href="{{ url_for('categorypage', catname='homedecor') }}"> 
+        <img src="{{ url_for('static', filename='carousel4.jpg') }}"></a>
       </div>
     </div>
     
