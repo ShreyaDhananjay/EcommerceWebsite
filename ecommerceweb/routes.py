@@ -1,7 +1,7 @@
 from flask import render_template, url_for, flash, redirect, request, session
 from ecommerceweb import app, db, bcrypt
 from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm, PaymentDetails
-from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping
+from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping, Seller
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime, timedelta
 import base64
@@ -122,7 +122,8 @@ def categorypage(catname):
 def product(id):
     session['url'] = None
     global b
-    prod=Product.query.filter_by(pid=id).first_or_404("This product does not exist")
+    prod = Product.query.filter_by(pid=id).first_or_404("This product does not exist")
+    seller = Seller.query.filter_by(sid=prod.sid).first()
     img=[]
     img.append(base64.b64encode(prod.image_file1).decode('ascii'))
     if prod.image_file2:
@@ -164,7 +165,7 @@ def product(id):
                         db.session.add(c)
                         db.session.commit()
                     flash('The product was added to your cart!', 'success')
-    return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form)
+    return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form, seller=seller)
 
 @app.route("/cart")
 @login_required

@@ -39,6 +39,8 @@ class Seller(db.Model, UserMixin):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     country = db.Column(db.String(50))
+    description = db.Column(db.String(300))
+    website = db.Column(db.String(120))
 
     def __repr__(self):
         return f"Seller('{self.name}', '{self.email}')"

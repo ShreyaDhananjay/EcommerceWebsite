@@ -130,6 +130,9 @@
                 <a class="nav-link active" data-toggle="tab" href="#desp">Description</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#seller">Seller Information</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#Shipping">Shipping</a>
               </li>
         </ul>
@@ -137,6 +140,21 @@
             <div id="desp" class="container tab-pane active"><br>
                   <h3>{{ prod.name }}</h3>
                  <p>{{ prod.details }}</p>
+            </div>
+            <div id="seller" class="container tab-pane fade"><br>
+                <h5>{{ seller.name }}</h5>
+                <p>{{ seller.description }}</p>
+                <table>
+                    <tr>
+                        <th>Website: </th>
+                        <td><span style="color: blue;">{{ seller.website }}</span></td>
+                    </tr>
+                    <tr></tr>
+                    <tr>
+                        <th>Email:</th>
+                        <td><span style="color: blue;">{{ seller.email }}</span></td>
+                    </tr>
+                </table>
             </div>
             <div id="Shipping" class="container tab-pane fade"><br>
                   <p>We ship everywhere in India within 2-4 business days.</p>
