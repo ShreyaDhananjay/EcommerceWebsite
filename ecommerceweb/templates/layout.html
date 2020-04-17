@@ -61,7 +61,7 @@
               <a class="nav-item nav-link" href="{{ url_for('about') }}">About Us</a>
               <form class="form-inline ml-auto" action="{{ url_for('search') }}" method="post" name="search">
                 <div class="md-form my-0">
-                {{ g.search_form.hidden_tag() }}{{ g.search_form.search(class="form-control") }}</div>
+                {{ g.search_form.hidden_tag() }}{{ g.search_form.search(class="form-control", placeholder="Search for a product") }}</div>
               <input type="submit" value="Search" class="btn btn-outline-white btn-md my-0 ml-sm-2" style="color: white;"></form>
             </div>
               <div class="dropdown" style="color: white;">

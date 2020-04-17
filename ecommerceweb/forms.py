@@ -69,4 +69,3 @@ class PaymentDetails(FlaskForm):
 
 class SearchForm(FlaskForm):
     search = StringField('Search for a product', validators=[DataRequired()])
-    #submit = SubmitField('Search')
