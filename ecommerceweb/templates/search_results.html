@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<center> 
+    <h2>Search results for "{{query}}"</h2>
+    {% if length==0 %}
+    <h3 style="min-height: 100vh;">No products found</h3>
+    {% elif length==1 %}
+    <h3>1 product found</h3>
+    {% else %}
+    <h3>{{length}} product found</h3>
+    {% endif %}
+</center>
+<br><br>
+<div class=" card-columns ml-5 mr-5">
+{% for p in range(length) %}
+  <div class="card mb-3" style="width:100%; height: 50%; min-width: 18rem;">
+    <center>
+    <a href="{{ url_for('product', id=prod[p].pid) }}"><center><img class="card-img-top" src="data:;base64,{{ img[p] }}" alt="Card image" ></center></a>
+    <div class="card-body">
+    <h4 class="card-title">{{ prod[p].name }}</h4>
+    <h6 class="card-text"><span class="currency">₹</span>{{ prod[p].cost }}</h6>
+    <a href="{{ url_for('product', id=prod[p].pid) }}" class="btn btn-outline-primary">See More</a>
+    </div>
+    </center>
+  </div>
+  {% endfor %}
+</div>
+{% endblock content%}

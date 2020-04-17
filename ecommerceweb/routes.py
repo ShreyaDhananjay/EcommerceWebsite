@@ -1,12 +1,16 @@
-from flask import render_template, url_for, flash, redirect, request, session
+from flask import render_template, url_for, flash, redirect, request, session, g
 from ecommerceweb import app, db, bcrypt
-from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm, PaymentDetails
+from ecommerceweb.forms import RegistrationForm, LoginForm, UpdateAccountForm, QuantityForm, PaymentDetails, SearchForm
 from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping, Seller
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import datetime, timedelta
 import base64
 
 b = []
+
+@app.before_request
+def before_request():
+    g.search_form = SearchForm()
 
 @app.route("/")
 @app.route("/home")
@@ -16,6 +20,22 @@ def home():
 @app.route("/about")
 def about():
     return render_template('about.html', title='About Us')
+
+@app.route('/search', methods=['POST'])
+def search():
+    if not g.search_form.validate_on_submit():
+        return redirect(url_for('home'))
+    return redirect(url_for('search_results', query=g.search_form.search.data))
+
+@app.route('/search_results/<query>')
+def search_results(query):
+    qstring = "%{}%".format(query)
+    prod = Product.query.filter(Product.name.like(qstring)).all()
+    length = len(prod)
+    img=[]
+    for p in prod:
+        img.append(base64.b64encode(p.image_file1).decode('ascii'))
+    return render_template('search_results.html', title='Search Results', query=query, prod=prod, length=length, img=img)
 
 @app.route("/signup", methods=['GET', 'POST'])
 def register():

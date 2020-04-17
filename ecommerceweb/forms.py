@@ -66,3 +66,7 @@ class PaymentDetails(FlaskForm):
     state = StringField('State', validators=[DataRequired(), Length(max=50)])
     country = StringField('Country', validators=[DataRequired(), Length(max=50)])
     submit = SubmitField('Confirm Details')
+
+class SearchForm(FlaskForm):
+    search = StringField('Search for a product', validators=[DataRequired()])
+    #submit = SubmitField('Search')
