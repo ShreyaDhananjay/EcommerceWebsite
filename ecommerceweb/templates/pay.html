@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<center>
+    <div class="container" style="min-height: 100vh;">
+        <div class="content-section">
+            <h2>Payment Screen</h2>
+            <form action="/invoice{{amount}}" method="post">
+                <script
+                  src="https://checkout.stripe.com/checkout.js"
+                  class="stripe-button"
+                  data-key="{{ key }}"
+                  data-description="A Flask Charge"
+                  data-amount="{{amount}}"
+                  data-locale="auto"
+                  data-currency='inr'>
+                </script>
+            </form>
+        </div>
+    </div>
+</center>
+{% endblock content%}

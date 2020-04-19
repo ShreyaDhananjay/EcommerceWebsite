@@ -3,15 +3,27 @@ import secrets
 from flask import render_template, url_for, flash, redirect, request, session, g, abort
 from ecommerceweb import app, db, bcrypt, mail
 from ecommerceweb.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
-                                QuantityForm, PaymentDetails, SearchForm,
+                                QuantityForm, ShippingDetails, SearchForm,
                                 RequestResetForm, ResetPasswordForm)
 from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping, Seller
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 from datetime import datetime, timedelta
+import stripe
 import base64
 
 b = []
+body = f''''''
+ship = []
+order = []
+stock = []
+product = []
+stripe_keys = {
+  'secret_key': os.environ.get('STRIPE_SECRET_KEY'),
+  'publishable_key': os.environ.get('STRIPE_PUBLISHABLE_KEY')
+}
+
+stripe.api_key = stripe_keys['secret_key']
 
 @app.before_request
 def before_request():
@@ -226,17 +238,21 @@ def product(id):
                     if cart != None:
                         cart.quantity += form.quantity.data
                         db.session.commit()
+                        print(cart)
                     else:
                         c = Cart(uid=current_user.id, pid=id, quantity=form.quantity.data)
                         db.session.add(c)
                         db.session.commit()
+                        print(c)
                     flash('The product was added to your cart!', 'success')
     return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form, seller=seller)
 
 @app.route("/cart")
 @login_required
 def cart():
+    print(current_user.id)
     c = Cart.query.filter_by(uid=current_user.id).all()
+    print(c)
     p=[]
     cost=[]
     for i in range(len(c)):
@@ -277,42 +293,44 @@ def removeitem(id):
 @app.route("/checkout", methods=['GET', 'POST'])
 @login_required 
 def checkout():
-    global b
+    global b, body, ship, order, stock, product
+    ship = []
+    order = []
+    stock = []
+    product = []
+    body = f''''''
     print(b)
     c = Cart.query.filter_by(uid=current_user.id).all()
+    o = Order.query.filter_by(uid=current_user.id).all()
+    if o == []:
+        order_id = current_user.id*10000
+    else:
+        order_id = o[-1].oid + 1
     if c==[] and b==[]:
         flash('No product has been selected', 'warning')
         return redirect(url_for('home'))
     elif len(b)!=0:
-        form = PaymentDetails()
+        form = ShippingDetails()
         if form.validate_on_submit():
             p = Product.query.filter_by(pid=b[0][1]).first()
-            o = Order(uid=current_user.id, pid=b[0][1], order_status="Ordered", quantity=b[0][3], total=p.cost*b[0][3])
-            db.session.add(o)
-            db.session.commit()
-            u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=b[0][3], total=p.cost*b[0][3])
-            db.session.add(u)
-            db.session.commit()
+            total = p.cost*b[0][3]
+            order.append(Order(oid = order_id, uid=current_user.id, pid=b[0][1], 
+                        order_status="Ordered", quantity=b[0][3], total=p.cost*b[0][3]))
+            #db.session.add(o)
+            #db.session.commit()
             delivery_date=datetime.utcnow()+timedelta(days=4)
-            shipping = Shipping(oid=o.oid, transac_id=u.transac_id, delivery_date=delivery_date, contactno=form.contactno.data, 
+            ship.append(Shipping(oid=order_id, delivery_date=delivery_date, contactno=form.contactno.data, 
                                 address_line1=form.addr1.data, address_line2=form.addr2.data, address_line3=form.addr3.data, 
-                                pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data)
-            db.session.add(shipping)
-            db.session.commit()
-            flash('Your order was processed successfully! An email was sent confirming your order', 'success')
-            p.stock-=int(b[0][3])
-            db.session.commit()
-            msg = Message('Order Confirmation', sender='noreply@demo.com', recipients=[current_user.email])
-            msg.body = f'''Your order was confirmed! Details:
+                                pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data))
+            body += f'''Your order was confirmed! Details:
             Product Name:{p.name}
-            Order ID: {o.oid}
-            Expected Delivery Date: {delivery_date}
-            Transaction Details: {url_for('transaction', transac_id=u.transac_id, _external=True)}
-                '''
-            mail.send(msg)
-
-            print('before invoice')
-            return redirect(url_for('invoice'))
+            Order ID: {order_id}
+            Expected Delivery Date: {delivery_date}'''
+            product.append(p)
+            stock.append(int(b[0][3]))#stores the amount that stock should be decreased by
+            print('before redirect')
+            session['url'] = url_for('checkout')
+            return redirect(url_for('pay', amount=total))
         elif request.method == 'GET':
             form.contactno.data = current_user.contactno
             form.addr1.data = current_user.address_line1
@@ -326,8 +344,9 @@ def checkout():
     else:
         print('cart has some products')
         user = User.query.filter_by(id=current_user.id).first()
-        form = PaymentDetails()
+        form = ShippingDetails()
         cost=[]
+        totalcost = 0
         if form.validate_on_submit():
             body = f'''Your order was confirmed! Details:
             '''
@@ -335,35 +354,25 @@ def checkout():
                 l=[]
                 prod = Product.query.filter_by(pid=c[i].pid).first()
                 cost.append(prod.cost * c[i].quantity)
-                o = Order(uid=current_user.id, pid=c[i].pid, order_status="Ordered", quantity=c[i].quantity, total=cost[i])
-                db.session.add(o)
-                db.session.commit()
-                u = UserTransac(uid=current_user.id, oid=o.oid, upiid=form.upiid.data, quantity=c[i].quantity, total=cost[i])
-                db.session.add(u)
-                db.session.commit()
+                order.append(Order(oid=order_id, uid=current_user.id, pid=c[i].pid, order_status="Ordered", 
+                                    quantity=c[i].quantity, total=cost[i]))
                 delivery_date=datetime.utcnow()+timedelta(days=4)
-                shipping = Shipping(oid=o.oid, transac_id=u.transac_id, delivery_date=delivery_date, contactno=form.contactno.data, 
+                ship.append(Shipping(oid=order_id, delivery_date=delivery_date, contactno=form.contactno.data, 
                                     address_line1=form.addr1.data, address_line2=form.addr2.data, address_line3=form.addr3.data, 
-                                    pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data)
-                db.session.add(shipping)
-                db.session.commit()
-                prod.stock-=c[i].quantity
-                db.session.commit()
+                                    pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data))
+                product.append(prod)
+                stock.append(c[i].quantity)#stores the amount that stock should be decreased by
                 l.extend([user.name, prod.pid, prod.name, c[i].quantity, cost[i]])
                 b.append(l)
+                totalcost += cost[i]
                 body+=f'''Product name: {prod.name}
-                Order ID: {o.oid}
+                Order ID: {order_id}
                 Expected Delivery Date: {delivery_date}
-                Transaction Details: {url_for('transaction', transac_id=u.transac_id, _external=True)}
                 
                 '''
-            flash('Your order was processed successfully! An email was sent confirming your order', 'success')
-            msg = Message('Order Confirmation', sender='noreply@demo.com', recipients=[current_user.email])
-            msg.body = body
-            mail.send(msg)
-            Cart.query.filter_by(uid=user.id).delete()
-            db.session.commit()
-            return redirect(url_for('invoice'))
+                order_id += 1
+            session['url'] = url_for('checkout')
+            return redirect(url_for('pay', amount=totalcost))
         elif request.method == 'GET':
             form.contactno.data = current_user.contactno
             form.addr1.data = current_user.address_line1
@@ -375,15 +384,64 @@ def checkout():
             form.country.data = current_user.country
 
         return render_template('checkout.html', title='Checkout', form=form)
-
-@app.route("/invoice")
+    
+@app.route('/pay<int:amount>', methods=['GET', 'POST'])
 @login_required 
-def invoice():
-    global b
+def pay(amount):
+    print(session['url'])
+    if 'url' in session and session['url'] == url_for('checkout'):
+        session['url'] = url_for('pay', amount=amount)
+        print(session['url'])
+        amount = amount*100
+        return render_template('pay.html', title='Payment Screen', amount=amount, 
+                            key=stripe_keys['publishable_key'])
+    else:
+        flash('Shipping details not entered', 'danger')
+        return redirect(url_for('home'))
+
+@app.route('/invoice<int:amount>', methods=['POST'])
+@login_required 
+def invoice(amount):
+    global b, body, ship, order, product, stock
+    print(b)
     b1 = b
     print(b1)
     b = []
+    customer = stripe.Customer.create(
+        email=current_user.email,
+        source=request.form['stripeToken'],
+        name=current_user.name,
+        address={
+            'line1': current_user.address_line1,
+            'postal_code': current_user.pincode,
+            'city': current_user.city,
+            'state': current_user.state,
+            'country': current_user.country,
+        },
+    )
+    stripe.Charge.create(
+        customer=customer.id,
+        amount=amount,
+        currency='inr',
+        description='Flask Charge'
+    )
+    for i in range(len(order)):
+        db.session.add(order[i])
+        db.session.commit()
+    for i in range(len(ship)):
+        db.session.add(ship[i])
+        db.session.commit()
+        product[i].stock -= stock[i]
+        db.session.commit()
+    if(len(order) > 1):
+        Cart.query.filter_by(uid=current_user.id).delete()
+        db.session.commit()
+    msg = Message('Order Confirmation', sender='noreply@demo.com', recipients=[current_user.email])
+    msg.body = body
+    mail.send(msg)
+    flash('Your order was processed successfully! An email was sent confirming your order', 'success')
     return render_template('invoice.html', inv=b1, length=len(b1))
+
 
 @app.route("/orders")
 @login_required     
@@ -394,18 +452,8 @@ def orders():
     for i in range(len(order)):
         p = Product.query.filter_by(pid=order[i].pid).first()
         pname.append(p.name)
-        t = UserTransac.query.filter_by(oid=order[i].oid).first_or_404()
-        txn.append(t.transac_id)
     return render_template('orders.html', title='Your Orders', order=order, l=len(order), pname=pname, txn=txn)
 
-@app.route("/transaction<int:transac_id>")
-@login_required     
-def transaction(transac_id):
-    transaction = UserTransac.query.filter_by(transac_id=transac_id).first_or_404()
-    if transaction.uid != current_user.id:
-        flash('You do not have the authority to view that transaction', 'warning')
-        return redirect(url_for('home'))
-    return render_template('transaction.html',title='Transaction Details', transaction=transaction)
 
 @app.route("/shipping<int:id>")
 @login_required     
@@ -416,3 +464,6 @@ def shipping(id):
         flash('You do not have the authority to visit this page', 'warning')
         return redirect(url_for('home'))
     return render_template('ship.html',title='Shipping Details', ship=ship)
+
+
+            
