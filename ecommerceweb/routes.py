@@ -299,9 +299,18 @@ def checkout():
                                 pincode=form.pincode.data, city=form.city.data, state=form.state.data, country=form.country.data)
             db.session.add(shipping)
             db.session.commit()
-            flash('Your order was processed successfully!', 'success')
+            flash('Your order was processed successfully! An email was sent confirming your order', 'success')
             p.stock-=int(b[0][3])
             db.session.commit()
+            msg = Message('Order Confirmation', sender='noreply@demo.com', recipients=[current_user.email])
+            msg.body = f'''Your order was confirmed! Details:
+            Product Name:{p.name}
+            Order ID: {o.oid}
+            Expected Delivery Date: {delivery_date}
+            Transaction Details: {url_for('transaction', transac_id=u.transac_id, _external=True)}
+                '''
+            mail.send(msg)
+
             print('before invoice')
             return redirect(url_for('invoice'))
         elif request.method == 'GET':
@@ -320,6 +329,8 @@ def checkout():
         form = PaymentDetails()
         cost=[]
         if form.validate_on_submit():
+            body = f'''Your order was confirmed! Details:
+            '''
             for i in range(len(c)):
                 l=[]
                 prod = Product.query.filter_by(pid=c[i].pid).first()
@@ -340,7 +351,16 @@ def checkout():
                 db.session.commit()
                 l.extend([user.name, prod.pid, prod.name, c[i].quantity, cost[i]])
                 b.append(l)
-                flash('Your order was processed successfully!', 'success')
+                body+=f'''Product name: {prod.name}
+                Order ID: {o.oid}
+                Expected Delivery Date: {delivery_date}
+                Transaction Details: {url_for('transaction', transac_id=u.transac_id, _external=True)}
+                
+                '''
+            flash('Your order was processed successfully! An email was sent confirming your order', 'success')
+            msg = Message('Order Confirmation', sender='noreply@demo.com', recipients=[current_user.email])
+            msg.body = body
+            mail.send(msg)
             Cart.query.filter_by(uid=user.id).delete()
             db.session.commit()
             return redirect(url_for('invoice'))
