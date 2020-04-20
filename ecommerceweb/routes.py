@@ -4,8 +4,9 @@ from flask import render_template, url_for, flash, redirect, request, session, g
 from ecommerceweb import app, db, bcrypt, mail
 from ecommerceweb.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
                                 QuantityForm, ShippingDetails, SearchForm,
-                                RequestResetForm, ResetPasswordForm)
-from ecommerceweb.dbmodel import User, Product, Category, Cart, UserTransac, Order, Shipping, Seller
+                                RequestResetForm, ResetPasswordForm, ReviewForm)
+from ecommerceweb.dbmodel import (User, Product, Category, Cart, UserTransac, Order, 
+                                    Shipping, Seller, Review)
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
 from datetime import datetime, timedelta
@@ -202,6 +203,7 @@ def product(id):
     global b
     prod = Product.query.filter_by(pid=id).first_or_404("This product does not exist")
     seller = Seller.query.filter_by(sid=prod.sid).first()
+    reviews = Review.query.filter_by(prod_id=id).all()
     img=[]
     img.append(base64.b64encode(prod.image_file1).decode('ascii'))
     if prod.image_file2:
@@ -210,7 +212,8 @@ def product(id):
         img.append(base64.b64encode(prod.image_file3).decode('ascii'))
     if prod.image_file4:
         img.append(base64.b64encode(prod.image_file4).decode('ascii'))
-    form=QuantityForm()
+    form = QuantityForm()
+    form2 = ReviewForm()
     if form.validate_on_submit():
         if not current_user.is_authenticated:
             session['url'] = url_for('product', id=id)
@@ -245,7 +248,26 @@ def product(id):
                         db.session.commit()
                         print(c)
                     flash('The product was added to your cart!', 'success')
-    return render_template('product_desc.html', title='Product Details', prod=prod, img=img, form=form, seller=seller)
+    if form2.validate_on_submit():
+        review = Review.query.filter_by(prod_id=id, user_id=current_user.id).first()
+        print(review)
+        if review == [] or review == None:
+            userprod = Order.query.filter_by(pid=id, uid=current_user.id).first()
+            if userprod == [] or userprod == None:
+                flash('You cannot leave a review for a product you have not purchased yet', 'danger')
+            else:
+                review = Review(prod_id=id, user_id=current_user.id, content=form2.content.data, 
+                                user_name=current_user.name)
+                db.session.add(review)
+                db.session.commit()
+                flash('Your review was added!', 'success')
+                form2.content.data = ''
+                reviews = Review.query.filter_by(prod_id=id).all()
+        else:
+            flash('You have already left a review for this product', 'danger')
+
+    return render_template('product_desc.html', title='Product Details', prod=prod, img=img, 
+                            form=form, form2=form2, seller=seller, reviews=reviews, length=len(reviews))
 
 @app.route("/cart")
 @login_required
@@ -465,5 +487,15 @@ def shipping(id):
         return redirect(url_for('home'))
     return render_template('ship.html',title='Shipping Details', ship=ship)
 
-
-            
+@app.route("/deletereview/<int:pid>")
+@login_required     
+def deletereview(pid):
+    review = Review.query.filter_by(user_id=current_user.id, prod_id=pid).first()
+    print(review)
+    if review is None:
+        flash('There is no review to delete', 'info')
+    else:
+        Review.query.filter_by(user_id=current_user.id, prod_id=pid).delete()
+        db.session.commit()
+        flash('Your review was deleted', 'success')
+    return redirect(url_for('product', id=pid))

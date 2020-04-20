@@ -55,8 +55,6 @@ class QuantityForm(FlaskForm):
     add = SubmitField('Add to Cart')
 
 class ShippingDetails(FlaskForm):
-    #upiid = StringField('UPI ID', validators=[DataRequired(), Email()])
-    #upipin = PasswordField('UPI Pin', validators=[DataRequired()])#, NumberRange(min=0, max=9999)])
     contactno = IntegerField('Contact Number', validators=[DataRequired()])
     addr1 = StringField('Address Line 1', validators=[DataRequired(), Length(min=1, max=50)])
     addr2 = StringField('Address Line 2', validators=[Length(max=50)])
@@ -86,3 +84,7 @@ class ResetPasswordForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password',
                                      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
+
+class ReviewForm(FlaskForm):
+    content = StringField('Content', validators=[DataRequired()])
+    submit = SubmitField('Add review')

@@ -135,6 +135,9 @@
               <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#Shipping">Shipping</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#reviews">Reviews</a>
+              </li>
         </ul>
         <div class="tab-content">
             <div id="desp" class="container tab-pane active"><br>
@@ -159,39 +162,45 @@
             <div id="Shipping" class="container tab-pane fade"><br>
                   <p>We ship everywhere in India within 2-4 business days.</p>
             </div>
+            <div id="reviews" class="container tab-pane fade"><br>
+                <h4>Leave a review</h4>
+                <form method="POST" action="" class="text">
+                    {{ form2.hidden_tag() }}						 
+                    <div class="form-group">
+                        <h6>{{ form2.content.label(class="form-control-label") }}</h6>
+                        {% if form2.content.errors %}
+                            {{ form2.content(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form2.content.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form2.content(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form2.submit(class="btn btn-outline-primary") }}
+                    </div>
+                </form>
+                {% if length==0 %}
+                <h4>There are no reviews for this product.</h4>
+                {% else %}
+                <h4>User Reviews</h4>
+                {% for r in reviews %}
+                <h5>{{r.user_name}} on {{ moment(r.date_posted).format('MMMM Do YYYY, h:mm a') }}</h5>
+                <p>{{r.content}}</p>
+                {% if r.user_id == current_user.id %}
+                <a href="{{url_for('deletereview', pid=r.prod_id)}}" class="btn btn-outline-danger">
+                    Delete Review
+                </a>
+                {%endif%}
+                <hr>
+                {%endfor%}
+                {%endif%}
+            </div>
           </div>
           <hr>
-          <!--
-          <div class="container-fluid">
-            <h2><center>You may also Like</center></h2>
-            <div class="card-columns">
-                <div class="card" style="width:100%">
-                <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery13.jpg') }}" alt="Card image" style="width:100%"></a>
-                    <div class="card-body">
-                        <h4 class="card-title">Sling Bag</h4>
-                        <p class="card-text">A durable and trendy handmade bag, only for Rs. 300! </p>
-                        <a href="#" class="btn btn-primary">Add to Cart</a>
-                    </div>
-                </div>
-                <div class="card" style="width:100%">
-                    <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='spices.jpg') }}" alt="Card image" style="width:100%"></a>
-                    <div class="card-body">
-                        <h4 class="card-title">Spices</h4>
-                        <p class="card-text">Check out our fresh homemade spices!</p>
-                        <a href="#" class="btn btn-primary">See more</a>
-                    </div>
-                </div>
-                <div class="card" style="width:100%">
-                    <a href="#"><img class="card-img-top" src="{{ url_for('static', filename='gallery25.jpg') }}" alt="Card image"style="width:100%"></a>
-                    <div class="card-body">
-                        <h4 class="card-title">Home Decor</h4>
-                        <p class="card-text">Exclusive deals on home decor!</p>
-                        <a href="#" class="btn btn-primary">See more</a>
-                    </div>
-                </div>
-            </div>    
-           </div>
-        -->
     </div>
 </div>
 

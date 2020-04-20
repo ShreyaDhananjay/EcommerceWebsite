@@ -24,7 +24,7 @@ class User(db.Model, UserMixin):
     city = db.Column(db.String(50))
     state = db.Column(db.String(50))
     country = db.Column(db.String(50))
-
+    
     def get_reset_token(self, expires_sec=1800):
         s = Serializer(app.config['SECRET_KEY'], expires_sec)
         return s.dumps({'user_id': self.id}).decode('utf-8')
@@ -124,3 +124,14 @@ class Cart(db.Model):
     uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), primary_key=True)
     pid = db.Column(db.Integer, db.ForeignKey(Product.__table__.c.pid), primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
+
+class Review(db.Model):
+    __tablename__="review"
+    user_id = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), primary_key=True, nullable=False)
+    prod_id = db.Column(db.Integer, db.ForeignKey(Product.__table__.c.pid), primary_key=True, nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    content = db.Column(db.String(300), nullable=False)
+    user_name = db.Column(db.String(75))
+
+    def __repr__(self):
+        return f"Review('{self.user_id}', '{self.prod_id}')"
