@@ -90,22 +90,10 @@ class Order(db.Model):
     order_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     order_status = db.Column(db.String, nullable=False)
 
-class UserTransac(db.Model):
-    __tablename__="usertransac"
-    transac_id = db.Column(db.Integer, primary_key=True)
-    uid = db.Column(db.Integer, db.ForeignKey(User.__table__.c.id), nullable=False)
-    oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
-    upiid = db.Column(db.String(120), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    total = db.Column(db.Integer, nullable=False)
-    transac_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    transac_details = db.Column(db.String(100))
-
 class Shipping(db.Model):
     __tablename__="shipping"
     ship_id = db.Column(db.Integer, primary_key=True)
     oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
-    transac_id = db.Column(db.Integer)
     tracking_no = db.Column(db.Numeric(12,0), unique=True)#, nullable=False)
     delivery_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     details = db.Column(db.String(100))

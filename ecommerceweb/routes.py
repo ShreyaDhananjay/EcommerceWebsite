@@ -5,7 +5,7 @@ from ecommerceweb import app, db, bcrypt, mail
 from ecommerceweb.forms import (RegistrationForm, LoginForm, UpdateAccountForm, 
                                 QuantityForm, ShippingDetails, SearchForm,
                                 RequestResetForm, ResetPasswordForm, ReviewForm)
-from ecommerceweb.dbmodel import (User, Product, Category, Cart, UserTransac, Order, 
+from ecommerceweb.dbmodel import (User, Product, Category, Cart, Order, 
                                     Shipping, Seller, Review)
 from flask_login import login_user, current_user, logout_user, login_required
 from flask_mail import Message
