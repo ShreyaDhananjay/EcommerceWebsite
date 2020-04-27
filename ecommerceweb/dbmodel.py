@@ -94,7 +94,6 @@ class Shipping(db.Model):
     __tablename__="shipping"
     ship_id = db.Column(db.Integer, primary_key=True)
     oid = db.Column(db.Integer, db.ForeignKey(Order.__table__.c.oid), nullable=False)
-    tracking_no = db.Column(db.Numeric(12,0), unique=True)#, nullable=False)
     delivery_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     details = db.Column(db.String(100))
     contactno = db.Column(db.Integer, unique=True, nullable=False)
