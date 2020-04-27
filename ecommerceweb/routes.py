@@ -338,8 +338,6 @@ def checkout():
             total = p.cost*b[0][3]
             order.append(Order(oid = order_id, uid=current_user.id, pid=b[0][1], 
                         order_status="Ordered", quantity=b[0][3], total=p.cost*b[0][3]))
-            #db.session.add(o)
-            #db.session.commit()
             delivery_date=datetime.utcnow()+timedelta(days=4)
             ship.append(Shipping(oid=order_id, delivery_date=delivery_date, contactno=form.contactno.data, 
                                 address_line1=form.addr1.data, address_line2=form.addr2.data, address_line3=form.addr3.data, 
