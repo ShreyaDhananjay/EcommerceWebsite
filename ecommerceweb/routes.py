@@ -277,12 +277,18 @@ def cart():
     print(c)
     p=[]
     cost=[]
+    status = []
     for i in range(len(c)):
         prod = Product.query.filter_by(pid=c[i].pid).first()
         p.append(prod.name)
-        cost.append(prod.cost * c[i].quantity)
+        if(prod.stock < c[i].quantity):
+            status.append(0)
+            cost.append(0)
+        else:
+            status.append(1)
+            cost.append(prod.cost * c[i].quantity)
     total=sum(cost)
-    return render_template('cart.html', title='Cart', p=p, cost=cost, c=c, total=total, l=len(c))
+    return render_template('cart.html', title='Cart', p=p, cost=cost, c=c, total=total, l=len(c), status=status)
 
 @app.route("/removeitem<int:id>")
 @login_required

@@ -43,11 +43,3 @@ def insertBLOB(id, name, cost, details, category_id, sid, image_file1, image_fil
             conn.close()
             print("the sqlite connection is closed")
 
-
-
-insertBLOB(44, "Ayurveda Rose & Jasmine Hair Cleanser (Shampoo), 200ml", 400, 
-'A mild hair cleanser made with pure essential oils of rose and jasmine and blended with vegetable soy protein binds. Moisturises and improves the tensile strength of hair, mitigates the damage of bleaching, perming and hot combing. A 97.5% natural formula , free of SLES (sulphates), parabens and petrochemicals. Apply on wet hair, leave for 2 minutes and rinse with water.', 
-3, 1, "C:/Users/Shreya/Documents/EcommerceWebsite/ecommerceweb/static/product images/ayurveda111.jpg"
-, None,
- None,
-  None, 35)

@@ -16,6 +16,7 @@
                                 <th>Item Name</th>
                                 <th>Quantity</th>
                                 <th>Total Cost</th>
+                                <th>Status</th>
                                 <th></th>
                             </tr>
                             {% for i in range(l)%}
@@ -23,6 +24,11 @@
                                     <td>{{ p[i] }}</td>
                                     <td>{{ c[i].quantity}}</td>
                                     <td><span class="currency">₹</span>{{ cost[i] }}</td>
+                                    {% if status[i] == 1 %}
+                                    <td style="color: green;">In Stock</td>
+                                    {% else %}
+                                    <td style="color: red;">Out of Stock! You will not be billed for this item.</td>
+                                    {% endif %}
                                     <td><a href="{{ url_for('removeitem', id=c[i].pid) }}"><button class="btn btn-outline-danger">Remove Item</button></a></td>
                                 </tr>
                             {% endfor %}
@@ -31,14 +37,23 @@
                                 <td><b>Total</b></td>
                                 <td><b><span class="currency">₹</span>{{ total }}</b></td>
                                 <td></td>
+                                <td></td>
                             </tr>
                             <tr>
-                                <td colspan="4">
+                                <td colspan="5">
+                                    {% if total == 0 %}
+                                    <a href="#">
+                                        <center>
+                                            <button class="btn btn-primary">Proceed To Payment</button>
+                                        </center>
+                                    </a>
+                                    {% else %}
                                     <a href="{{ url_for('checkout')}}">
                                         <center>
                                             <button class="btn btn-outline-primary">Proceed To Payment</button>
                                         </center>
                                     </a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         </tbody>
